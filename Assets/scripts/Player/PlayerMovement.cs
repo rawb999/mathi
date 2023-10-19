@@ -20,7 +20,7 @@ public class PlayerMovement : MonoBehaviour
             {
                 transform.Translate(Vector3.left * Time.deltaTime * strafeSpeed);
             }
-            
+
         }
 
         if (Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.RightArrow)) //if player is pressing right key, move right
