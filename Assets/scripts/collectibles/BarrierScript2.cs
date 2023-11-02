@@ -7,17 +7,15 @@ public class BarrierScript2 : MonoBehaviour
 {
     public BarrierScript1 barrier1Script; // Reference to the first barrier.
 
-    public GameObject barrier1; // Reference to the second barrier.
-
     public bool isCollected = false;
 
     public TMP_Text barrierText;
 
-    public int number;
+    private int number;
 
-    public int variableNumber;
+    private int variableNumber;
 
-    public int variableNumber2;
+    private int variableNumber2;
 
     void Start()
     {

@@ -3,7 +3,11 @@ guid: 54a6dfc188674c64180aab6f215139d3
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2
-  defaultReferences: []
+  defaultReferences:
+  - barrier2Script: {instanceID: 0}
+  - barrierText: {instanceID: 0}
+  - prefabToInstantiate: {instanceID: 0}
+  - player: {fileID: 6184704729276086777, guid: af8b7507912438745922a81196b92985, type: 3}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 

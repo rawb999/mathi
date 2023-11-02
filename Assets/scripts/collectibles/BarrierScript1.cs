@@ -7,23 +7,23 @@ public class BarrierScript1 : MonoBehaviour
 {
     public BarrierScript2 barrier2Script; // Reference to the second barrier.
 
-    public GameObject barrier2; // Reference to the second barrier.
-
     public bool isCollected = false;
 
     public TMP_Text barrierText;
 
-    public int number;
+    private int number;
 
-    public int variableNumber;
+    private int variableNumber;
 
-    public int variableNumber2;
+    private int variableNumber2;
+
+
 
     void Start()
     {
         //generate a random number for the equation to be used
         number = Random.Range(0, 3);
-        
+
         if (number == 0)
         {
             variableNumber = Random.Range(0, 10);
@@ -77,14 +77,14 @@ public class BarrierScript1 : MonoBehaviour
     private void Random1()
     {
         // Update the score.
-        
+
         collectableControl.scoreCount += variableNumber;
     }
 
     private void Random2()
     {
         // Update the score.
-       
+
         collectableControl.scoreCount *= variableNumber;
         collectableControl.scoreCount -= variableNumber2;
     }
@@ -92,7 +92,7 @@ public class BarrierScript1 : MonoBehaviour
     private void Random3()
     {
         // Update the score.
-        
+
         collectableControl.scoreCount /= variableNumber;
         collectableControl.scoreCount += variableNumber2;
     }

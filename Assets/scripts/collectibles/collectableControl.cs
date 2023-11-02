@@ -11,7 +11,5 @@ public class collectableControl : MonoBehaviour
     void Update()
     {
         scoreCountDisplay.GetComponent<Text>().text = "" + scoreCount;
-
-
     }
 }

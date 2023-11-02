@@ -1,0 +1,1 @@
+N.B. There used only one animation (idle01) in the demo-scene, you have to customize transitions and conditions options in Animator window.
