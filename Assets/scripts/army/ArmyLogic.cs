@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,6 +12,7 @@ public class ArmyLogic : MonoBehaviour
     private int currentZombs = 0;
     public GameObject player;
     private List<GameObject> zombies = new List<GameObject>();
+    private List<Tuple<float, float>> zombieSpawnPositions = new List<Tuple<float, float>>();
     private float moveSpeed = 3;
     private float strafeSpeed = 4;
     private int updatedScore;
@@ -24,7 +26,7 @@ public class ArmyLogic : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        prefabIndex = Random.Range(0, 39);
+        prefabIndex = UnityEngine.Random.Range(0, 39);
     }
 
     // Update is called once per frame
@@ -39,14 +41,19 @@ public class ArmyLogic : MonoBehaviour
         {
             zombie.transform.Translate(Vector3.forward * Time.deltaTime * moveSpeed, Space.World); //moves the character forward
 
-            if (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.LeftArrow)) //if player is pressing left key, move left
+            if (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.LeftArrow))  //if player is not heading outside the boundary
             {
-                zombie.transform.Translate(Vector3.left * Time.deltaTime * strafeSpeed);
+                if (zombie.gameObject.transform.position.x > levelBoundary.leftSide + zombieSpawnPositions[zombies.IndexOf(zombie)].Item1) //if player is pressing left key, move left
+                {
+                    zombie.transform.Translate(Vector3.left * Time.deltaTime * strafeSpeed);
+                }
             }
-
-            if (Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.RightArrow)) //if player is pressing right key, move right
+            if (Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.RightArrow)) //if player is not heading outside the boundary
             {
-                zombie.transform.Translate(Vector3.left * Time.deltaTime * strafeSpeed * -1);
+                if (zombie.transform.position.x < (levelBoundary.rightSide + zombieSpawnPositions[zombies.IndexOf(zombie)].Item1)) //if player is pressing right key, move right
+                {
+                    zombie.transform.Translate(Vector3.left * Time.deltaTime * strafeSpeed * -1);
+                }
             }
         }
     }
@@ -66,7 +73,7 @@ public class ArmyLogic : MonoBehaviour
             if (currentZombs < zombCount)
             {
                 currentZombs++;
-                prefabIndex = Random.Range(0, 39);
+                prefabIndex = UnityEngine.Random.Range(0, 39);
                 if (currentZombs <= 21)
                 {
                     row = 0;
@@ -83,16 +90,18 @@ public class ArmyLogic : MonoBehaviour
                 {
                     row = 3;
                 }
-                Vector3 spawnPosition = new Vector3(player.transform.position.x + xSpawnPoints[currentZombs - (21 * row) - 1], .5f, player.transform.position.z + +zSpawnPoints[row]); // You can change these coordinates
-                    Quaternion spawnRotation = Quaternion.identity; // No rotation
+                float newPosX = xSpawnPoints[currentZombs - (21 * row) - 1];
+                float newPosZ = player.transform.position.z + zSpawnPoints[row];
+                Vector3 spawnPosition = new Vector3(player.transform.position.x + xSpawnPoints[currentZombs - (21 * row) - 1], .5f, player.transform.position.z + zSpawnPoints[row]); // You can change these coordinates
+                Quaternion spawnRotation = Quaternion.identity; // No rotation
 
-                    // Instantiate the prefab
-                    GameObject instantiatedPrefab = Instantiate(prefabsToInstantiate[prefabIndex], spawnPosition, spawnRotation);
+                // Instantiate the prefab
+                GameObject instantiatedPrefab = Instantiate(prefabsToInstantiate[prefabIndex], spawnPosition, spawnRotation);
 
 
-                    // Add the instantiated zombie to the list
-                    zombies.Add(instantiatedPrefab);
-
+                // Add the instantiated zombie to the list
+                zombies.Add(instantiatedPrefab);
+                zombieSpawnPositions.Add(new Tuple<float, float>(newPosX, newPosZ));
                 
             }
             else if (currentZombs > zombCount)
@@ -102,6 +111,7 @@ public class ArmyLogic : MonoBehaviour
                 {
                     Destroy(zombies.Last());
                     zombies.Remove(zombies.Last());
+                    zombieSpawnPositions.Remove(zombieSpawnPositions.Last());
                 }
                 currentZombs--;
             }

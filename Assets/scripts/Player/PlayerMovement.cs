@@ -4,10 +4,14 @@ using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
+    public Animator animator;
     private float moveSpeed = 3;
     private float strafeSpeed = 4;
     // Start is called before the first frame update
-
+    void start ()
+    {
+        animator.SetTrigger("Run");
+    }
 
     // Update is called once per frame
     void Update()
@@ -30,5 +34,10 @@ public class PlayerMovement : MonoBehaviour
                 transform.Translate(Vector3.left * Time.deltaTime * strafeSpeed * -1);
             }
         }
+    }
+
+    public void spellCast()
+    {
+        animator.SetTrigger("spellCast");
     }
 }

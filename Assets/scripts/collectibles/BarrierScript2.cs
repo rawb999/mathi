@@ -17,6 +17,9 @@ public class BarrierScript2 : MonoBehaviour
 
     private int variableNumber2;
 
+    public GameObject player;
+
+
     void Start()
     {
         //generate a random number for the equation to be used

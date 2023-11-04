@@ -17,6 +17,9 @@ public class BarrierScript1 : MonoBehaviour
 
     private int variableNumber2;
 
+    public GameObject player;
+
+
 
 
     void Start()
