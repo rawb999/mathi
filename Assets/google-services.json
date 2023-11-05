@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "270254174251",
+    "project_id": "mathi-db",
+    "storage_bucket": "mathi-db.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:270254174251:android:12196f781e0809912c3a6e",
+        "android_client_info": {
+          "package_name": "com.CPH.Mathi"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAHNSQaJq5QtpNVDf_MaIGMjstX6RGjTjs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
