@@ -223,7 +223,7 @@ GameObject:
   - component: {fileID: 1352622735194151513}
   - component: {fileID: 379746125689827757}
   m_Layer: 0
-  m_Name: PlatformPrefab
+  m_Name: plat1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -444,6 +444,7 @@ MonoBehaviour:
   barrier1Script: {fileID: 5794904891531404465}
   isCollected: 0
   barrierText: {fileID: 603816354762085941}
+  player: {fileID: 0}
 --- !u!1 &5783001362439248896
 GameObject:
   m_ObjectHideFlags: 0
@@ -740,6 +741,7 @@ MonoBehaviour:
   barrier2Script: {fileID: 2317480060858902245}
   isCollected: 0
   barrierText: {fileID: 460436530132533026}
+  player: {fileID: 0}
 --- !u!1 &9051213221449963088
 GameObject:
   m_ObjectHideFlags: 0
