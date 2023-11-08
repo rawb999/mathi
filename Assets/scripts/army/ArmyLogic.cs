@@ -16,16 +16,25 @@ public class ArmyLogic : MonoBehaviour
     private float moveSpeed = 3;
     private float strafeSpeed = 4;
     private int updatedScore;
-    private int recentScore = 0;
+    private int recentScore = 1;
     private GameObject mostRecentZombie;
     public GameObject[] prefabsToInstantiate;
     private int prefabIndex;
     private List<float> xSpawnPoints = new List<float> { 0f, -.5f, .5f, -1f, 1f, -1.5f, 1.5f, -2f, 2f, -2.5f, 2.5f, -3f, 3f, -3.5f, 3.5f, -4f, 4f, -4.5f, 4.5f, -5f, 5f };
     private List<float> zSpawnPoints = new List<float> { -1f, -2f, -3f, -4f };
     private int row;
+    public Animator playerAnimator;
+    private List<string> animations = new List<string> { "attack", "attack2", "spellcast"};
+    public static bool inFight = false;
+    public float stoppingDistance = 1.0f; // This is the distance at which the zombie will stop from the enemy
+    private Dictionary<GameObject, Vector3> originalOffsets;
+    bool startedMovingBack = false;
+
+
     // Start is called before the first frame update
     void Start()
     {
+        originalOffsets = new Dictionary<GameObject, Vector3>();
         prefabIndex = UnityEngine.Random.Range(0, 39);
     }
 
@@ -35,28 +44,82 @@ public class ArmyLogic : MonoBehaviour
         updatedScore = collectableControl.scoreCount;
         if (updatedScore != recentScore)
         {
+            print("updated");
+            recentScore = updatedScore;
+            playerAnimator.SetTrigger(animations[UnityEngine.Random.Range(0, 3)]);
             updateZombs();
         }
-        foreach (GameObject zombie in zombies)
+        if (!inFight)
         {
-            zombie.transform.Translate(Vector3.forward * Time.deltaTime * moveSpeed, Space.World); //moves the character forward
-
-            if (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.LeftArrow))  //if player is not heading outside the boundary
+            startedMovingBack = false;
+            foreach (GameObject zombie in zombies)
             {
-                if (zombie.gameObject.transform.position.x > levelBoundary.leftSide + zombieSpawnPositions[zombies.IndexOf(zombie)].Item1) //if player is pressing left key, move left
+                zombie.transform.Translate(Vector3.forward * Time.deltaTime * moveSpeed, Space.World); //moves the character forward
+
+                if (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.LeftArrow))  //if player is not heading outside the boundary
                 {
-                    zombie.transform.Translate(Vector3.left * Time.deltaTime * strafeSpeed);
+                    if (zombie.gameObject.transform.position.x > levelBoundary.leftSide + zombieSpawnPositions[zombies.IndexOf(zombie)].Item1) //if player is pressing left key, move left
+                    {
+                        zombie.transform.Translate(Vector3.left * Time.deltaTime * strafeSpeed);
+                    }
+                }
+                if (Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.RightArrow)) //if player is not heading outside the boundary
+                {
+                    if (zombie.transform.position.x < (levelBoundary.rightSide + zombieSpawnPositions[zombies.IndexOf(zombie)].Item1)) //if player is pressing right key, move right
+                    {
+                        zombie.transform.Translate(Vector3.left * Time.deltaTime * strafeSpeed * -1);
+                    }
                 }
             }
-            if (Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.RightArrow)) //if player is not heading outside the boundary
+        } 
+        else
+        {
+            
+            Enemy[] allEnemies = FindObjectsOfType<Enemy>();
+            foreach (GameObject zombie in zombies)
             {
-                if (zombie.transform.position.x < (levelBoundary.rightSide + zombieSpawnPositions[zombies.IndexOf(zombie)].Item1)) //if player is pressing right key, move right
+                Vector3 originalPosition = player.transform.position + originalOffsets[zombie];
+                float distanceToOriginal = Vector3.Distance(zombie.transform.position, originalPosition);
+                float minDistance = Mathf.Infinity;
+                Vector3 currentPosition = zombie.transform.position; // Use the position of the current zombie
+                Enemy nearestEnemy = null;
+
+                foreach (Enemy enemyScript in allEnemies)
                 {
-                    zombie.transform.Translate(Vector3.left * Time.deltaTime * strafeSpeed * -1);
+                    float distance = Vector3.Distance(currentPosition, enemyScript.transform.position);
+                    if (distance < minDistance)
+                    {
+                        minDistance = distance;
+                        nearestEnemy = enemyScript;
+                    }
+                }
+
+                if (nearestEnemy != null)
+                {
+                    if (minDistance > stoppingDistance && startedMovingBack == false)
+                    {
+                        // Move towards the nearest enemy if it's beyond the stopping distance
+                        MoveTowards(zombie, nearestEnemy.transform.position);
+                    }
+                    else 
+                    {
+                        // Move back to the original position if within the stopping distance
+                        Enemy.dead = true;
+                        startedMovingBack = true;
+                        MoveTowards(zombie, originalPosition);
+                        float closeEnoughDistance = 0.1f;
+                        if (Vector3.Distance(zombie.transform.position, originalPosition) < closeEnoughDistance)
+                        {
+                            print("called");
+                            fight.endFight();
+                            Enemy.dead = false;
+                        }
+                    }
                 }
             }
         }
     }
+
 
     public void updateZombs()
     {
@@ -101,7 +164,9 @@ public class ArmyLogic : MonoBehaviour
 
                 // Add the instantiated zombie to the list
                 zombies.Add(instantiatedPrefab);
-                zombieSpawnPositions.Add(new Tuple<float, float>(newPosX, newPosZ));
+                Vector3 offset = instantiatedPrefab.transform.position - player.transform.position;
+                originalOffsets[instantiatedPrefab] = offset;
+                zombieSpawnPositions.Add(new Tuple<float, float>(newPosX, newPosZ)); //change this later
                 
             }
             else if (currentZombs > zombCount)
@@ -119,5 +184,21 @@ public class ArmyLogic : MonoBehaviour
 
         
 
+    }
+
+    void MoveTowards(GameObject zombie, Vector3 targetPosition)
+    {
+        // Use the position of the current zombie and move towards the target position
+        Vector3 currentPosition = zombie.transform.position;
+        Vector3 moveDirection = (targetPosition - currentPosition).normalized;
+
+        // Ensure the zombie stops at the target position by only moving if the distance is greater than a small threshold
+        float distanceToTarget = Vector3.Distance(currentPosition, targetPosition);
+        if (distanceToTarget > 0.1f) // This threshold helps prevent overshooting the target
+        {
+            Vector3 moveVector = moveDirection * moveSpeed * Time.deltaTime;
+            // This will move the zombie towards the target position
+            zombie.transform.position += moveVector;
+        }
     }
 }
