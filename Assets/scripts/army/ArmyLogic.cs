@@ -86,7 +86,6 @@ public class ArmyLogic : MonoBehaviour
 
                 if (!zombieScript.hasTarget)
                 {
-                    print("reached");
                     Enemy nearestEnemy = FindNearestEnemy(zombie); // This should return an Enemy component
                     if (nearestEnemy != null)
                     {
@@ -97,7 +96,6 @@ public class ArmyLogic : MonoBehaviour
 
                 if (zombieScript.hasTarget == true) // If zombie has a target, move towards that target
                 {
-                    print("reached2");
                     float step = moveSpeed * Time.deltaTime;
                     Vector3 targetPosition = zombieScript.target.transform.position;
 
