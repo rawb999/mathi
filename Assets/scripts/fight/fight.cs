@@ -15,7 +15,6 @@ public class fight : MonoBehaviour
 
     public static void startFight()
     {
-        collectableControl.scoreCount -= 20;
         PlayerMovement.inFight = true;
         ArmyLogic.inFight = true;
         CameraController.inFight = true;

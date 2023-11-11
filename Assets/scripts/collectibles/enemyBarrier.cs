@@ -14,7 +14,6 @@ public class enemyBarrier : MonoBehaviour
             isCollected = true;
             // Disable this barrier.
             this.gameObject.SetActive(false);
-            collectableControl.scoreCount -= 30;
             fight.startFight();
             
         }

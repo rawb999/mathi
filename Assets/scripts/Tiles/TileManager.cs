@@ -16,7 +16,7 @@ public class TileManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        spawnTile(0);
+        spawnEnemyTile(0);
         spawnTile(0);
         spawnTile(0);
         spawnTile(0);

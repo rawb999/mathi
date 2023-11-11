@@ -21,14 +21,18 @@ public class ArmyLogic : MonoBehaviour
     public GameObject[] prefabsToInstantiate;
     private int prefabIndex;
     private List<float> xSpawnPoints = new List<float> { 0f, -.5f, .5f, -1f, 1f, -1.5f, 1.5f, -2f, 2f, -2.5f, 2.5f, -3f, 3f, -3.5f, 3.5f, -4f, 4f, -4.5f, 4.5f, -5f, 5f };
-    private List<float> zSpawnPoints = new List<float> { -1f, -2f, -3f, -4f };
-    private int row;
+    private List<float> zSpawnPoints = new List<float> { -2f, -3f, -4f, -5f };
+    private int row = 0;
     public Animator playerAnimator;
     private List<string> animations = new List<string> { "attack", "attack2", "spellcast"};
     public static bool inFight = false;
     public float stoppingDistance = 1.0f; // This is the distance at which the zombie will stop from the enemy
     private Dictionary<GameObject, Vector3> originalOffsets;
     bool startedMovingBack = false;
+    bool startedMovingUp = false;
+    bool startedAttacking = false;
+    public bool fightStarted = false;
+    public Enemy[] allEnemies = new Enemy[0];
 
 
     // Start is called before the first frame update
@@ -44,7 +48,6 @@ public class ArmyLogic : MonoBehaviour
         updatedScore = collectableControl.scoreCount;
         if (updatedScore != recentScore)
         {
-            print("updated");
             recentScore = updatedScore;
             playerAnimator.SetTrigger(animations[UnityEngine.Random.Range(0, 3)]);
             updateZombs();
@@ -71,66 +74,92 @@ public class ArmyLogic : MonoBehaviour
                     }
                 }
             }
-        } 
+        }
         else
         {
-            
-            Enemy[] allEnemies = FindObjectsOfType<Enemy>();
+            checkEnemiesCount(); //possibly movable for performance
+
+
             foreach (GameObject zombie in zombies)
             {
-                Vector3 originalPosition = player.transform.position + originalOffsets[zombie];
-                float distanceToOriginal = Vector3.Distance(zombie.transform.position, originalPosition);
-                float minDistance = Mathf.Infinity;
-                Vector3 currentPosition = zombie.transform.position; // Use the position of the current zombie
-                Enemy nearestEnemy = null;
+                Zombie zombieScript = zombie.GetComponent<Zombie>();
 
-                foreach (Enemy enemyScript in allEnemies)
+                if (!zombieScript.hasTarget)
                 {
-                    float distance = Vector3.Distance(currentPosition, enemyScript.transform.position);
-                    if (distance < minDistance)
+                    print("reached");
+                    Enemy nearestEnemy = FindNearestEnemy(zombie); // This should return an Enemy component
+                    if (nearestEnemy != null)
                     {
-                        minDistance = distance;
-                        nearestEnemy = enemyScript;
+                        zombieScript.target = nearestEnemy;
+                        zombieScript.hasTarget = true;
                     }
                 }
 
-                if (nearestEnemy != null)
+                if (zombieScript.hasTarget == true) // If zombie has a target, move towards that target
                 {
-                    if (minDistance > stoppingDistance && startedMovingBack == false)
-                    {
-                        // Move towards the nearest enemy if it's beyond the stopping distance
-                        MoveTowards(zombie, nearestEnemy.transform.position);
-                    }
-                    else 
-                    {
-                        // Move back to the original position if within the stopping distance
-                        Enemy.dead = true;
-                        startedMovingBack = true;
-                        MoveTowards(zombie, originalPosition);
-                        float closeEnoughDistance = 0.1f;
-                        if (Vector3.Distance(zombie.transform.position, originalPosition) < closeEnoughDistance)
-                        {
-                            print("called");
-                            fight.endFight();
-                            Enemy.dead = false;
-                        }
-                    }
+                    print("reached2");
+                    float step = moveSpeed * Time.deltaTime;
+                    Vector3 targetPosition = zombieScript.target.transform.position;
+
+                    // Calculate a position that is 1 unit away from the target
+                    Vector3 stopPosition = targetPosition - (targetPosition - zombie.transform.position).normalized;
+
+                    // Use Vector3.MoveTowards to move towards the stop position
+                    Vector3 newPosition = Vector3.MoveTowards(zombie.transform.position, stopPosition, step);
+
+                    // Apply the new position to the zombie
+                    zombie.transform.position = newPosition;
                 }
             }
+
+            
+        }
+
+    }
+
+    public void checkEnemiesCount()
+    {
+        Enemy[] allEnemies = FindObjectsOfType<Enemy>();
+        if (allEnemies.Length == 0)
+        {
+            print("called");
+            foreach (GameObject zombie in zombies)
+            {
+                Zombie zombieScript = zombie.GetComponent<Zombie>();
+                zombieScript.hasTarget = false;
+                MoveToOriginalPosition(zombie);
+            }
+            fight.endFight();
         }
     }
 
+
+
+
+    private void MoveToOriginalPosition(GameObject zombie)
+    {
+        
+        if (originalOffsets.TryGetValue(zombie, out Vector3 offset))
+        {
+            Vector3 originalPosition = offset + player.transform.position;
+            zombie.transform.position = originalPosition;
+            
+        }
+        
+        
+    }
 
     public void updateZombs()
     {
 
         zombCount = collectableControl.scoreCount / 10;
 
+        //caps out at 84 zombies
         if (zombCount > 84)
         {
             zombCount = 84;
         }
-
+        //if the # of spawned zombies is not equal to how many there should be
         while (currentZombs != zombCount)
         {
             if (currentZombs < zombCount)
@@ -139,23 +168,25 @@ public class ArmyLogic : MonoBehaviour
                 prefabIndex = UnityEngine.Random.Range(0, 39);
                 if (currentZombs <= 21)
                 {
-                    row = 0;
+                    row = 0; // 1st row
                 }
                 else if (currentZombs > 21 && currentZombs <= 42)
                 {
-                    row = 1;
+                    row = 1; // 2nd row
                 }
-                else if (currentZombs > 42 && currentZombs <= 62)
+                else if (currentZombs > 42 && currentZombs <= 63)
                 {
-                    row = 2;
+                    row = 2; // 3rd row
                 }
                 else
                 {
-                    row = 3;
+                    row = 3; // 4th row
                 }
+                CameraController.row = row;
                 float newPosX = xSpawnPoints[currentZombs - (21 * row) - 1];
                 float newPosZ = player.transform.position.z + zSpawnPoints[row];
-                Vector3 spawnPosition = new Vector3(player.transform.position.x + xSpawnPoints[currentZombs - (21 * row) - 1], .5f, player.transform.position.z + zSpawnPoints[row]); // You can change these coordinates
+                //spawn the zombie in its proper position based on its row and column
+                Vector3 spawnPosition = new Vector3(player.transform.position.x + xSpawnPoints[currentZombs - (21 * row) - 1], .5f, player.transform.position.z + zSpawnPoints[row]);
                 Quaternion spawnRotation = Quaternion.identity; // No rotation
 
                 // Instantiate the prefab
@@ -177,8 +208,27 @@ public class ArmyLogic : MonoBehaviour
                     Destroy(zombies.Last());
                     zombies.Remove(zombies.Last());
                     zombieSpawnPositions.Remove(zombieSpawnPositions.Last());
+                    //might cause memory leak because not removing offset. fix later
                 }
                 currentZombs--;
+
+                if (currentZombs <= 21)
+                {
+                    row = 0; // 1st row
+                }
+                else if (currentZombs > 21 && currentZombs <= 42)
+                {
+                    row = 1; // 2nd row
+                }
+                else if (currentZombs > 42 && currentZombs <= 63)
+                {
+                    row = 2; // 3rd row
+                }
+                else
+                {
+                    row = 3; // 4th row
+                }
+                CameraController.row = row;
             }
         }
 
@@ -186,19 +236,28 @@ public class ArmyLogic : MonoBehaviour
 
     }
 
-    void MoveTowards(GameObject zombie, Vector3 targetPosition)
+    private Enemy FindNearestEnemy(GameObject zombie)
     {
-        // Use the position of the current zombie and move towards the target position
-        Vector3 currentPosition = zombie.transform.position;
-        Vector3 moveDirection = (targetPosition - currentPosition).normalized;
+        Enemy[] allEnemies = FindObjectsOfType<Enemy>();
+        float minDistance = Mathf.Infinity;
+        Enemy nearestEnemy = null;
 
-        // Ensure the zombie stops at the target position by only moving if the distance is greater than a small threshold
-        float distanceToTarget = Vector3.Distance(currentPosition, targetPosition);
-        if (distanceToTarget > 0.1f) // This threshold helps prevent overshooting the target
+        foreach (Enemy enemy in allEnemies)
         {
-            Vector3 moveVector = moveDirection * moveSpeed * Time.deltaTime;
-            // This will move the zombie towards the target position
-            zombie.transform.position += moveVector;
+            if (enemy != null && enemy.gameObject.activeSelf)
+            {
+                float distance = Vector3.Distance(zombie.transform.position, enemy.transform.position);
+                if (distance < minDistance)
+                {
+                    minDistance = distance;
+                    nearestEnemy = enemy;
+                }
+            }
         }
+
+        return nearestEnemy;
     }
+
+
+
 }
