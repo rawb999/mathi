@@ -14,6 +14,7 @@ public class Zombie : MonoBehaviour
 
     void Update()
     {
+        attackCooldownLeft -= Time.deltaTime;
         if (target == null)
         {
             hasTarget = false;
@@ -22,7 +23,7 @@ public class Zombie : MonoBehaviour
         {
             if (Vector3.Distance(transform.position, target.transform.position) <= attackDistance && target != null)
             {
-                attackCooldownLeft -= Time.deltaTime;
+                
                 if (attackCooldownLeft <= 0.1f)
                 {
                     
