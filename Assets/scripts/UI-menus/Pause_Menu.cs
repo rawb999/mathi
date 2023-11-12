@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
 public class Pause_Menu : MonoBehaviour
@@ -28,8 +29,12 @@ public class Pause_Menu : MonoBehaviour
     }
     public void Restart()
     {
+       
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
         Time.timeScale = 1;
-    }
 
+        collectableControl.scoreCount = 1;
+
+
+    }
 }
