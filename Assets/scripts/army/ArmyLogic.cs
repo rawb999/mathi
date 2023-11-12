@@ -93,16 +93,22 @@ public class ArmyLogic : MonoBehaviour
                 if (zombieScript.hasTarget == true && zombieScript.target != null) // If zombie has a target, move towards that target
                 {
                     float step = moveSpeed * Time.deltaTime;
+
                     Vector3 targetPosition = zombieScript.target.transform.position;
 
                     // Calculate a position that is 1 unit away from the target
-                    Vector3 stopPosition = targetPosition - (targetPosition - zombie.transform.position).normalized;
+                    Vector3 directionToTarget = (targetPosition - zombie.transform.position).normalized;
+                    Vector3 stopPosition = targetPosition - directionToTarget;
 
                     // Use Vector3.MoveTowards to move towards the stop position
                     Vector3 newPosition = Vector3.MoveTowards(zombie.transform.position, stopPosition, step);
 
                     // Apply the new position to the zombie
                     zombie.transform.position = newPosition;
+
+                    // Rotate the zombie to face the target
+                    Quaternion targetRotation = Quaternion.LookRotation(directionToTarget);
+                    zombie.transform.rotation = Quaternion.Slerp(zombie.transform.rotation, targetRotation, step);
                 }
             }
 
@@ -158,7 +164,8 @@ public class ArmyLogic : MonoBehaviour
         {
             Vector3 originalPosition = offset + player.transform.position;
             zombie.transform.position = originalPosition;
-            
+            zombie.transform.rotation = Quaternion.identity;
+
         }
         
         
