@@ -28,9 +28,6 @@ public class ArmyLogic : MonoBehaviour
     public static bool inFight = false;
     public float stoppingDistance = 1.0f; // This is the distance at which the zombie will stop from the enemy
     private Dictionary<GameObject, Vector3> originalOffsets;
-    bool startedMovingBack = false;
-    bool startedMovingUp = false;
-    bool startedAttacking = false;
     public bool fightStarted = false;
     public Enemy[] allEnemies = new Enemy[0];
 
@@ -54,7 +51,6 @@ public class ArmyLogic : MonoBehaviour
         }
         if (!inFight)
         {
-            startedMovingBack = false;
             foreach (GameObject zombie in zombies)
             {
                 zombie.transform.Translate(Vector3.forward * Time.deltaTime * moveSpeed, Space.World); //moves the character forward
@@ -77,24 +73,24 @@ public class ArmyLogic : MonoBehaviour
         }
         else
         {
-            checkEnemiesCount(); //possibly movable for performance
+            checkEnemiesCount(); //checks to see if enemies are still alive. if not, fight ends.
 
 
             foreach (GameObject zombie in zombies)
             {
                 Zombie zombieScript = zombie.GetComponent<Zombie>();
 
-                if (!zombieScript.hasTarget)
+                if (!zombieScript.hasTarget) //if the zombie does not have a target
                 {
-                    Enemy nearestEnemy = FindNearestEnemy(zombie); // This should return an Enemy component
-                    if (nearestEnemy != null)
+                    Enemy nearestEnemy = FindNearestEnemy(zombie); //attempt the find the closest target 
+                    if (nearestEnemy != null) //if target found, assign it to the zombie
                     {
                         zombieScript.target = nearestEnemy;
                         zombieScript.hasTarget = true;
                     }
                 }
 
-                if (zombieScript.hasTarget == true) // If zombie has a target, move towards that target
+                if (zombieScript.hasTarget == true && zombieScript.target != null) // If zombie has a target, move towards that target
                 {
                     float step = moveSpeed * Time.deltaTime;
                     Vector3 targetPosition = zombieScript.target.transform.position;
@@ -115,12 +111,21 @@ public class ArmyLogic : MonoBehaviour
 
     }
 
-    public void checkEnemiesCount()
+    public void checkEnemiesCount() //checks to see if all enemies are dead
     {
         Enemy[] allEnemies = FindObjectsOfType<Enemy>();
-        if (allEnemies.Length == 0)
+        bool stillSomeAlive = false;
+        foreach (Enemy enemy in allEnemies)
         {
-            print("called");
+            Enemy enemyScript = enemy.GetComponent<Enemy>();
+            if (enemy != null && enemy.gameObject.activeSelf && enemyScript.dead == false)
+            {
+                stillSomeAlive = true;
+            }
+        }
+
+        if (!stillSomeAlive)
+        {
             foreach (GameObject zombie in zombies)
             {
                 Zombie zombieScript = zombie.GetComponent<Zombie>();
@@ -129,6 +134,18 @@ public class ArmyLogic : MonoBehaviour
             }
             fight.endFight();
         }
+
+        /* leaving here until I test and make sure it's unnecessary
+        if (allEnemies.Length == 0)
+        {
+            foreach (GameObject zombie in zombies)
+            {
+                Zombie zombieScript = zombie.GetComponent<Zombie>();
+                zombieScript.hasTarget = false;
+                MoveToOriginalPosition(zombie);
+            }
+            fight.endFight();
+        }*/
     }
 
 
@@ -242,7 +259,8 @@ public class ArmyLogic : MonoBehaviour
 
         foreach (Enemy enemy in allEnemies)
         {
-            if (enemy != null && enemy.gameObject.activeSelf)
+            Enemy enemyScript = enemy.GetComponent<Enemy>();
+            if (enemy != null && enemy.gameObject.activeSelf && enemyScript.dead == false)
             {
                 float distance = Vector3.Distance(zombie.transform.position, enemy.transform.position);
                 if (distance < minDistance)

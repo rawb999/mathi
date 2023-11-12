@@ -8,8 +8,11 @@ public class Enemy : MonoBehaviour
 {
     public int health;
     public int maxHealth = 100;
+    public bool dead = false;
+    private float deadCooldown = 2f;
     [SerializeField] FloatingHealthbar healthBar;
     // Start is called before the first frame update
+    public Animator animator;
 
     private void Awake()
     {
@@ -21,24 +24,26 @@ public class Enemy : MonoBehaviour
         health = maxHealth;
 
         healthBar.UpdateHealthBar(health, maxHealth);
+
+        animator = GetComponent<Animator>();
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (health <= 0)
+        if (dead)
         {
-          
-            Die();
+            deadCooldown -= Time.deltaTime;
+
+        }
+
+        if (deadCooldown <= 0)
+        {
+            Destroy(gameObject);
         }
     }
 
-    void Die()
-    {
-        ArmyLogic armyLogic = FindObjectOfType<ArmyLogic>();
-        //soldierAnimation.SetBool("death", true);
-        Destroy(gameObject); // Destroy the enemy GameObject
-    }
+
 
     public void TakeDamage(int damage)
     {
@@ -46,7 +51,8 @@ public class Enemy : MonoBehaviour
         healthBar.UpdateHealthBar(health, maxHealth);
         if (health <= 0)
         {
-            Die();
+            dead = true;
+            animator.SetBool("death", true);
         }
     }
 }

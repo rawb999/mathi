@@ -53433,6 +53433,7 @@ GameObject:
   m_Component:
   - component: {fileID: 9155040804243632550}
   - component: {fileID: 9155040804252884960}
+  - component: {fileID: -2371646039879093926}
   m_Layer: 0
   m_Name: TTS_PoliceBlack_Soldier
   m_TagString: Untagged
@@ -53481,6 +53482,23 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &-2371646039879093926
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9155040804243402182}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b7426a7f9a3df0e4a9c4f84b32920c23, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  health: 0
+  maxHealth: 100
+  dead: 0
+  healthBar: {fileID: 0}
+  animator: {fileID: 0}
 --- !u!1 &9155040804243402184
 GameObject:
   m_ObjectHideFlags: 0
