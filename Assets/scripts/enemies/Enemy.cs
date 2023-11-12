@@ -6,6 +6,8 @@ using UnityEngine.UI;
 public class Enemy : MonoBehaviour
     
 {
+    public Zombie target;
+    public bool hasTarget = false;
     public int health;
     public int maxHealth = 100;
     public bool dead = false;
@@ -13,6 +15,8 @@ public class Enemy : MonoBehaviour
     [SerializeField] FloatingHealthbar healthBar;
     // Start is called before the first frame update
     public Animator animator;
+    public float attackCooldown = 1f; // seconds
+    private float attackCooldownLeft = 0f;
 
     private void Awake()
     {
@@ -31,6 +35,9 @@ public class Enemy : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        
+        UpdateHealthBarVisibility();
+        attackCooldownLeft -= Time.deltaTime;
         if (dead)
         {
             deadCooldown -= Time.deltaTime;
@@ -40,6 +47,25 @@ public class Enemy : MonoBehaviour
         if (deadCooldown <= 0)
         {
             Destroy(gameObject);
+        }
+
+        if (hasTarget && !dead)
+        {
+           
+            if (target.dead == true)
+            {
+                hasTarget = false;
+            }
+            if (target != null)
+            {
+                //animator.SetBool("attacking", true);
+                if (attackCooldownLeft <= 0.1f)
+                {
+                    //animator.SetTrigger("attackTrigger");
+                    attackCooldownLeft = attackCooldown;
+                    target.TakeDamage(10);
+                }
+            }
         }
     }
 
@@ -54,5 +80,10 @@ public class Enemy : MonoBehaviour
             dead = true;
             animator.SetBool("death", true);
         }
+    }
+
+    private void UpdateHealthBarVisibility()
+    {
+        healthBar.gameObject.SetActive(health < maxHealth && health > 0);
     }
 }

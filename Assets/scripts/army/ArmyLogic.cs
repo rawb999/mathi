@@ -8,10 +8,8 @@ using UnityEngine;
 
 public class ArmyLogic : MonoBehaviour
 {
-    private int zombCount = 0;
-    private int currentZombs = 0;
+    public static int currentZombs = 0;
     public GameObject player;
-    private List<GameObject> zombies = new List<GameObject>();
     private List<Tuple<float, float>> zombieSpawnPositions = new List<Tuple<float, float>>();
     private float moveSpeed = 3;
     private float strafeSpeed = 4;
@@ -22,49 +20,52 @@ public class ArmyLogic : MonoBehaviour
     private int prefabIndex;
     private List<float> xSpawnPoints = new List<float> { 0f, -.5f, .5f, -1f, 1f, -1.5f, 1.5f, -2f, 2f, -2.5f, 2.5f, -3f, 3f, -3.5f, 3.5f, -4f, 4f, -4.5f, 4.5f, -5f, 5f };
     private List<float> zSpawnPoints = new List<float> { -2f, -3f, -4f, -5f };
-    private int row = 0;
     public Animator playerAnimator;
     private List<string> animations = new List<string> { "attack", "attack2", "spellcast"};
     public static bool inFight = false;
     public float stoppingDistance = 1.0f; // This is the distance at which the zombie will stop from the enemy
-    private Dictionary<GameObject, Vector3> originalOffsets;
     public bool fightStarted = false;
-    public Enemy[] allEnemies = new Enemy[0];
+
+
 
 
     // Start is called before the first frame update
     void Start()
     {
-        originalOffsets = new Dictionary<GameObject, Vector3>();
         prefabIndex = UnityEngine.Random.Range(0, 39);
     }
 
     // Update is called once per frame
     void Update()
     {
-        updatedScore = collectableControl.scoreCount;
-        if (updatedScore != recentScore)
-        {
-            recentScore = updatedScore;
-            playerAnimator.SetTrigger(animations[UnityEngine.Random.Range(0, 3)]);
-            updateZombs();
-        }
         if (!inFight)
         {
-            foreach (GameObject zombie in zombies)
+            updatedScore = collectableControl.scoreCount;
+            if (updatedScore > recentScore)
             {
+                recentScore = updatedScore;
+                playerAnimator.SetTrigger(animations[UnityEngine.Random.Range(0, 3)]);
+                updateZombs();
+            }
+
+            Zombie[] zombies = FindObjectsOfType<Zombie>();
+            int rightmostDigit = collectableControl.scoreCount % 10;
+            collectableControl.scoreCount = zombies.Length * 10 + rightmostDigit;
+            foreach (Zombie zombie in zombies)
+            {
+                Zombie zombieScript = zombie.GetComponent<Zombie>();
                 zombie.transform.Translate(Vector3.forward * Time.deltaTime * moveSpeed, Space.World); //moves the character forward
 
                 if (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.LeftArrow))  //if player is not heading outside the boundary
                 {
-                    if (zombie.gameObject.transform.position.x > levelBoundary.leftSide + zombieSpawnPositions[zombies.IndexOf(zombie)].Item1) //if player is pressing left key, move left
+                    if (zombie.transform.position.x > (levelBoundary.leftSide + zombieScript.offset.x)) //if player is pressing left key, move left
                     {
                         zombie.transform.Translate(Vector3.left * Time.deltaTime * strafeSpeed);
                     }
                 }
                 if (Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.RightArrow)) //if player is not heading outside the boundary
                 {
-                    if (zombie.transform.position.x < (levelBoundary.rightSide + zombieSpawnPositions[zombies.IndexOf(zombie)].Item1)) //if player is pressing right key, move right
+                    if (zombie.transform.position.x < (levelBoundary.rightSide + zombieScript.offset.x)) //if player is pressing right key, move right
                     {
                         zombie.transform.Translate(Vector3.left * Time.deltaTime * strafeSpeed * -1);
                     }
@@ -73,43 +74,75 @@ public class ArmyLogic : MonoBehaviour
         }
         else
         {
-            checkEnemiesCount(); //checks to see if enemies are still alive. if not, fight ends.
-
-
-            foreach (GameObject zombie in zombies)
+            Enemy[] enemies = FindObjectsOfType<Enemy>();
+            Zombie[] zombies = FindObjectsOfType<Zombie>();
+            checkEnemiesCount(enemies); //checks to see if enemies are still alive. if not, fight ends.
+            foreach (Enemy enemy in enemies)
             {
-                Zombie zombieScript = zombie.GetComponent<Zombie>();
+                Enemy enemyScript = enemy.GetComponent<Enemy>();
 
-                if (!zombieScript.hasTarget) //if the zombie does not have a target
+                if (!enemyScript.hasTarget) //if the zombie does not have a target
                 {
-                    Enemy nearestEnemy = FindNearestEnemy(zombie); //attempt the find the closest target 
+                    Zombie nearestEnemy = FindNearestZombie(enemy); //attempt the find the closest target 
                     if (nearestEnemy != null) //if target found, assign it to the zombie
                     {
-                        zombieScript.target = nearestEnemy;
-                        zombieScript.hasTarget = true;
+                        enemy.target = nearestEnemy;
+                        enemy.hasTarget = true;
                     }
                 }
 
-                if (zombieScript.hasTarget == true && zombieScript.target != null) // If zombie has a target, move towards that target
+                if (enemyScript.hasTarget == true && enemyScript.target != null) // If enemy has a target, look at that target
                 {
                     float step = moveSpeed * Time.deltaTime;
-
-                    Vector3 targetPosition = zombieScript.target.transform.position;
+                    Vector3 targetPosition = enemyScript.target.transform.position;
 
                     // Calculate a position that is 1 unit away from the target
-                    Vector3 directionToTarget = (targetPosition - zombie.transform.position).normalized;
-                    Vector3 stopPosition = targetPosition - directionToTarget;
+                    Vector3 directionToTarget = (targetPosition - enemy.transform.position).normalized;
 
-                    // Use Vector3.MoveTowards to move towards the stop position
-                    Vector3 newPosition = Vector3.MoveTowards(zombie.transform.position, stopPosition, step);
-
-                    // Apply the new position to the zombie
-                    zombie.transform.position = newPosition;
-
-                    // Rotate the zombie to face the target
+                    // Rotate the enemy to face the target
                     Quaternion targetRotation = Quaternion.LookRotation(directionToTarget);
-                    zombie.transform.rotation = Quaternion.Slerp(zombie.transform.rotation, targetRotation, step);
+                    enemy.transform.rotation = Quaternion.Slerp(enemy.transform.rotation, targetRotation, step);
                 }
+            }
+
+            foreach (Zombie zombie in zombies)
+            {
+                if (zombie != null && zombie.gameObject.activeSelf)
+                {
+                    Zombie zombieScript = zombie.GetComponent<Zombie>();
+
+                    if (!zombieScript.hasTarget) //if the zombie does not have a target
+                    {
+                        Enemy nearestEnemy = FindNearestEnemy(zombie, enemies); //attempt the find the closest target 
+                        if (nearestEnemy != null) //if target found, assign it to the zombie
+                        {
+                            zombieScript.target = nearestEnemy;
+                            zombieScript.hasTarget = true;
+                        }
+                    }
+
+                    if (zombieScript.hasTarget == true && zombieScript.target != null && zombieScript.dead == false) // If zombie has a target, move towards that target
+                    {
+                        float step = moveSpeed * Time.deltaTime;
+
+                        Vector3 targetPosition = zombieScript.target.transform.position;
+
+                        // Calculate a position that is 1 unit away from the target
+                        Vector3 directionToTarget = (targetPosition - zombie.transform.position).normalized;
+                        Vector3 stopPosition = targetPosition - directionToTarget;
+
+                        // Use Vector3.MoveTowards to move towards the stop position
+                        Vector3 newPosition = Vector3.MoveTowards(zombie.transform.position, stopPosition, step);
+
+                        // Apply the new position to the zombie
+                        zombie.transform.position = newPosition;
+
+                        // Rotate the zombie to face the target
+                        Quaternion targetRotation = Quaternion.LookRotation(directionToTarget);
+                        zombie.transform.rotation = Quaternion.Slerp(zombie.transform.rotation, targetRotation, step);
+                    }
+                }
+                
             }
 
             
@@ -117,11 +150,10 @@ public class ArmyLogic : MonoBehaviour
 
     }
 
-    public void checkEnemiesCount() //checks to see if all enemies are dead
+    public void checkEnemiesCount(Enemy[] enemies) //checks to see if all enemies are dead
     {
-        Enemy[] allEnemies = FindObjectsOfType<Enemy>();
         bool stillSomeAlive = false;
-        foreach (Enemy enemy in allEnemies)
+        foreach (Enemy enemy in enemies)
         {
             Enemy enemyScript = enemy.GetComponent<Enemy>();
             if (enemy != null && enemy.gameObject.activeSelf && enemyScript.dead == false)
@@ -132,17 +164,19 @@ public class ArmyLogic : MonoBehaviour
 
         if (!stillSomeAlive)
         {
-            foreach (GameObject zombie in zombies)
+            Zombie[] zombies = FindObjectsOfType<Zombie>();
+            MoveToOriginalPosition();
+            foreach (Zombie zombie in zombies)
             {
                 Zombie zombieScript = zombie.GetComponent<Zombie>();
                 zombieScript.hasTarget = false;
-                MoveToOriginalPosition(zombie);
             }
             fight.endFight();
+
         }
 
         /* leaving here until I test and make sure it's unnecessary
-        if (allEnemies.Length == 0)
+        if (enemies.Length == 0)
         {
             foreach (GameObject zombie in zombies)
             {
@@ -156,115 +190,76 @@ public class ArmyLogic : MonoBehaviour
 
 
 
-
-    private void MoveToOriginalPosition(GameObject zombie)
+    /* leaving here in case I want to go back to old way of moving to original position
+    private void MoveToOriginalPosition(Zombie zombie)
     {
-        
-        if (originalOffsets.TryGetValue(zombie, out Vector3 offset))
-        {
-            Vector3 originalPosition = offset + player.transform.position;
-            zombie.transform.position = originalPosition;
-            zombie.transform.rotation = Quaternion.identity;
+        Zombie zombieScript = zombie.GetComponent<Zombie>();
+        Vector3 originalPosition = new Vector3(
+        zombieScript.offset.x + player.transform.position.x,
+        .5f, // Set this to the appropriate ground level
+        zombieScript.offset.z + player.transform.position.z
+    );
+        zombie.transform.position = originalPosition;
+        zombie.transform.rotation = Quaternion.identity;
+    }
+    */
 
+    private void MoveToOriginalPosition()
+    {
+        Zombie[] zombies = FindObjectsOfType<Zombie>();
+        int counter = 0;
+        int row;
+        foreach (Zombie zombie in zombies)
+        {
+            Zombie zombieScript = zombie.GetComponent<Zombie>();
+            if (zombie != null && zombie.gameObject.activeSelf && zombieScript.dead == false)
+            {
+                
+                zombieScript.hasTarget = false;
+                row = counter / 21;
+                Vector3 originalPosition = new Vector3(xSpawnPoints[counter - (21 * row)] + player.transform.position.x, .5f, zSpawnPoints[row] + player.transform.position.z);
+                zombie.transform.position = originalPosition;
+                zombie.transform.rotation = Quaternion.identity;
+                Vector3 offset = zombie.transform.position - player.transform.position;
+                zombieScript.offset = offset;
+                counter++;
+            }
         }
-        
-        
     }
 
     public void updateZombs()
     {
+        int neededZombies = collectableControl.scoreCount / 10;
 
-        zombCount = collectableControl.scoreCount / 10;
-
-        //caps out at 84 zombies
-        if (zombCount > 84)
-        {
-            zombCount = 84;
-        }
         //if the # of spawned zombies is not equal to how many there should be
-        while (currentZombs != zombCount)
+        while ((currentZombs < neededZombies) && (currentZombs < 84))
         {
-            if (currentZombs < zombCount)
-            {
-                currentZombs++;
-                prefabIndex = UnityEngine.Random.Range(0, 39);
-                if (currentZombs <= 21)
-                {
-                    row = 0; // 1st row
-                }
-                else if (currentZombs > 21 && currentZombs <= 42)
-                {
-                    row = 1; // 2nd row
-                }
-                else if (currentZombs > 42 && currentZombs <= 63)
-                {
-                    row = 2; // 3rd row
-                }
-                else
-                {
-                    row = 3; // 4th row
-                }
-                CameraController.row = row;
-                float newPosX = xSpawnPoints[currentZombs - (21 * row) - 1];
-                float newPosZ = player.transform.position.z + zSpawnPoints[row];
-                //spawn the zombie in its proper position based on its row and column
-                Vector3 spawnPosition = new Vector3(player.transform.position.x + xSpawnPoints[currentZombs - (21 * row) - 1], .5f, player.transform.position.z + zSpawnPoints[row]);
-                Quaternion spawnRotation = Quaternion.identity; // No rotation
+            prefabIndex = UnityEngine.Random.Range(0, 39);
+            int row = currentZombs / 21;
+            CameraController.row = row;
+            //spawn the zombie in its proper position based on its row and column
+            Vector3 spawnPosition = new Vector3(player.transform.position.x + xSpawnPoints[currentZombs - (21 * row)], .5f, player.transform.position.z + zSpawnPoints[row]);
+            Quaternion spawnRotation = Quaternion.identity; // No rotation
 
-                // Instantiate the prefab
-                GameObject instantiatedPrefab = Instantiate(prefabsToInstantiate[prefabIndex], spawnPosition, spawnRotation);
+            // Instantiate the prefab
+            GameObject zombie = Instantiate(prefabsToInstantiate[prefabIndex], spawnPosition, spawnRotation); //CHECK THIS LATER MAY CAUSE BUG
+            Vector3 offset = zombie.transform.position - player.transform.position;
+            Zombie zombieScript = zombie.GetComponent<Zombie>();
+            zombieScript.offset = offset;
+            currentZombs++;
 
-
-                // Add the instantiated zombie to the list
-                zombies.Add(instantiatedPrefab);
-                Vector3 offset = instantiatedPrefab.transform.position - player.transform.position;
-                originalOffsets[instantiatedPrefab] = offset;
-                zombieSpawnPositions.Add(new Tuple<float, float>(newPosX, newPosZ)); //change this later
-                
-            }
-            else if (currentZombs > zombCount)
-            {
-                // Remove the most recently instantiated zombie
-                if (zombies.Count > 0 && zombies.Last() != null)
-                {
-                    Destroy(zombies.Last());
-                    zombies.Remove(zombies.Last());
-                    zombieSpawnPositions.Remove(zombieSpawnPositions.Last());
-                    //might cause memory leak because not removing offset. fix later
-                }
-                currentZombs--;
-
-                if (currentZombs <= 21)
-                {
-                    row = 0; // 1st row
-                }
-                else if (currentZombs > 21 && currentZombs <= 42)
-                {
-                    row = 1; // 2nd row
-                }
-                else if (currentZombs > 42 && currentZombs <= 63)
-                {
-                    row = 2; // 3rd row
-                }
-                else
-                {
-                    row = 3; // 4th row
-                }
-                CameraController.row = row;
-            }
         }
 
         
 
     }
 
-    private Enemy FindNearestEnemy(GameObject zombie)
+    private Enemy FindNearestEnemy(Zombie zombie, Enemy[] enemies)
     {
-        Enemy[] allEnemies = FindObjectsOfType<Enemy>();
         float minDistance = Mathf.Infinity;
         Enemy nearestEnemy = null;
 
-        foreach (Enemy enemy in allEnemies)
+        foreach (Enemy enemy in enemies)
         {
             Enemy enemyScript = enemy.GetComponent<Enemy>();
             if (enemy != null && enemy.gameObject.activeSelf && enemyScript.dead == false)
@@ -281,6 +276,27 @@ public class ArmyLogic : MonoBehaviour
         return nearestEnemy;
     }
 
+    private Zombie FindNearestZombie(Enemy enemy)
+    {
+        float minDistance = Mathf.Infinity;
+        Zombie nearestEnemy = null;
+        Zombie[] zombies = FindObjectsOfType<Zombie>();
+        foreach (Zombie zombie in zombies)
+        {
+            Zombie zombieScript = zombie.GetComponent<Zombie>();
+            if (zombie != null && zombie.gameObject.activeSelf && zombieScript.dead == false)
+            {
+                float distance = Vector3.Distance(enemy.transform.position, zombie.transform.position);
+                if (distance < minDistance)
+                {
+                    minDistance = distance;
+                    nearestEnemy = zombie;
+                }
+            }
+        }
+
+        return nearestEnemy;
+    }
 
 
 }

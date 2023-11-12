@@ -3,23 +3,45 @@ using UnityEngine;
 
 public class Zombie : MonoBehaviour
 {
-    public int health = 100;
+    public int health;
     public Enemy target;
-    public bool IsMoving = false;
-    public bool inRange = false; // set to true by army logic script when u want to begin attacking
     public bool hasTarget = false;
     private const float attackDistance = 1.2f;
     public float attackCooldown = 1f; // seconds
     private float attackCooldownLeft = 0f;
     private Animator animator;
+    public bool dead = false;
+    public int maxHealth = 100;
+    public Vector3 offset;
+    [SerializeField] FloatingHealthbar healthBar;
+    private float deadCooldown = 2f;
+
+    void Awake()
+    {
+        healthBar = GetComponentInChildren<FloatingHealthbar>();
+    }
 
     void Start()
     {
+        health = maxHealth;
+
+        healthBar.UpdateHealthBar(health, maxHealth);
         animator = GetComponent<Animator>();
     }
 
     void Update()
     {
+        if (dead)
+        {
+            deadCooldown -= Time.deltaTime;
+
+        }
+
+        if (deadCooldown <= 0)
+        {
+            Destroy(gameObject);
+        }
+        UpdateHealthBarVisibility();
         attackCooldownLeft -= Time.deltaTime;
         if (target == null || target.Equals(null))
         {
@@ -31,7 +53,7 @@ public class Zombie : MonoBehaviour
             {
                 hasTarget = false;
             }
-            if (Vector3.Distance(transform.position, target.transform.position) <= attackDistance && target != null)
+            if (dead == false && Vector3.Distance(transform.position, target.transform.position) <= attackDistance && target.dead == false)
             {
                 animator.SetBool("attacking", true);
                 if (attackCooldownLeft <= 0.1f)
@@ -48,19 +70,23 @@ public class Zombie : MonoBehaviour
             animator.SetBool("attacking", false);
         }
 
-    }   
+    }
 
     public void TakeDamage(int damage)
     {
         health -= damage;
+        healthBar.UpdateHealthBar(health, maxHealth);
         if (health <= 0)
         {
-            Die();
+            ArmyLogic.currentZombs--;
+            dead = true;
+            animator.SetBool("dead", true);
         }
     }
-    void Die()
+
+    private void UpdateHealthBarVisibility()
     {
-        Destroy(gameObject); // Destroy the zombie GameObject
+        healthBar.gameObject.SetActive(health < maxHealth && health > 0);
     }
 
 }

@@ -19,31 +19,28 @@ public class BarrierScript2 : MonoBehaviour
 
     public GameObject player;
 
+    private int variableNumber3;
+
 
     void Start()
     {
         //generate a random number for the equation to be used
-        number = Random.Range(0, 3);
+        number = Random.Range(0, 2);
 
         if (number == 0)
         {
-            variableNumber = Random.Range(0, 10);
+            variableNumber = Random.Range(0, 80);
             barrierText.text = "x + " + variableNumber.ToString();
         }
 
         if (number == 1)
         {
-            variableNumber = Random.Range(2, 4);
-            variableNumber2 = Random.Range(1, 15);
-            barrierText.text = "x * " + variableNumber.ToString() + " - " + variableNumber2.ToString();
+            variableNumber = Random.Range(1, 8);
+            variableNumber2 = Random.Range(1, 8);
+            variableNumber3 = Random.Range(1, 50);
+            barrierText.text = "(" + variableNumber.ToString() + " * " + variableNumber2.ToString() + ") + " + variableNumber3.ToString();
         }
 
-        if (number == 2)
-        {
-            variableNumber = Random.Range(2, 4);
-            variableNumber2 = Random.Range(1, 15);
-            barrierText.text = "x / " + variableNumber.ToString() + " + " + variableNumber2.ToString();
-        }
     }
 
     private void OnTriggerEnter(Collider other)
@@ -67,10 +64,6 @@ public class BarrierScript2 : MonoBehaviour
                 Random2();
             }
 
-            if (number == 2)
-            {
-                Random3();
-            }
 
         }
     }
@@ -86,16 +79,10 @@ public class BarrierScript2 : MonoBehaviour
     {
         // Update the score.
 
-        collectableControl.scoreCount *= variableNumber;
-        collectableControl.scoreCount -= variableNumber2;
+        collectableControl.scoreCount += (variableNumber * variableNumber2 + variableNumber3);
     }
 
-    private void Random3()
-    {
-        // Update the score.
 
-        collectableControl.scoreCount /= variableNumber;
-        collectableControl.scoreCount += variableNumber2;
-    }
+
 
 }
