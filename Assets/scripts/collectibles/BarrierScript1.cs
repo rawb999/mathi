@@ -7,6 +7,8 @@ public class BarrierScript1 : MonoBehaviour
 {
     public BarrierScript2 barrier2Script; // Reference to the second barrier.
 
+    public BarrierScript3 barrier3Script;
+
     public bool isCollected = false;
 
     public TMP_Text barrierText;
@@ -55,6 +57,8 @@ public class BarrierScript1 : MonoBehaviour
             // Disable the other barrier.
             // Access the BarrierScript1 component on barrier1 and set isCollected to false.
             barrier2Script.isCollected = true;
+
+            barrier3Script.isCollected = true;
 
             if (number == 0)
             {
