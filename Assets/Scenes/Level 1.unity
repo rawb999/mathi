@@ -1354,7 +1354,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   scoreCountDisplay: {fileID: 1292477194}
-  waveCountDisplay: {fileID: 44139762}
+  waveCountDisplay: {fileID: 738260476}
 --- !u!1 &1501451532
 GameObject:
   m_ObjectHideFlags: 0
