@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
 public class audioManager : MonoBehaviour
 {
@@ -13,9 +14,28 @@ public class audioManager : MonoBehaviour
     public AudioClip background;
     public AudioClip menuSelect;
 
-    private void Start()
+    public static audioManager instance;
+
+    private void Awake()
+    {
+        if (instance == null)
+        {
+            instance = this;
+            DontDestroyOnLoad(gameObject);
+        }
+        else 
+        {
+            Destroy(gameObject);
+        }
+    }
+
+    public void Start()
     {
         musicSource.clip = background;
         musicSource.Play();
+    }
+    public void PlaySFX(AudioClip clip)
+    {
+        SFXSource.PlayOneShot(clip);
     }
  }
