@@ -453,7 +453,7 @@ Light:
   m_BounceIntensity: 1
   m_ColorTemperature: 6570
   m_UseColorTemperature: 0
-  m_BoundingSphereOverride: {x: 4.5904e-41, y: -3.2991233e+15, z: 4.5904e-41, w: 9.403955e-38}
+  m_BoundingSphereOverride: {x: 0, y: 3.996498e+31, z: 5.17e-43, w: 8.3e-44}
   m_UseBoundingSphereOverride: 0
   m_UseViewFrustumForShadowCasterCull: 1
   m_ShadowRadius: 0
@@ -756,13 +756,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   tilePrefabs:
-  - {fileID: 4771553280515376198, guid: c55972756a95c7342b81481de02c5f25, type: 3}
+  - {fileID: 4771553280515376198, guid: 21b2981f61979ed43bcfaf60e86733bd, type: 3}
+  - {fileID: 4771553280515376198, guid: a387eae363442d94bb5075cb13e3a16a, type: 3}
+  - {fileID: 4771553280515376198, guid: 21b2981f61979ed43bcfaf60e86733bd, type: 3}
+  - {fileID: 7210291737619858906, guid: d7be9908a16181148adc94e770b8230a, type: 3}
+  - {fileID: 4771553280515376198, guid: bbb6afee8e9e34f489514493f38af1ab, type: 3}
+  - {fileID: 4771553280515376198, guid: a00b501e0f725f04a9a515ae9e21b8ce, type: 3}
   enemyTilePrefabs:
   - {fileID: 4771553280515376198, guid: a2fac63cb79d3ff4788d22fc523db30c, type: 3}
   zSpawn: 0
   tileLength: 20
   playerTransform: {fileID: 1276948259}
   numberOfTiles: 3
+  numberOfEnemies: 0
 --- !u!1 &1211482802
 GameObject:
   m_ObjectHideFlags: 0
@@ -2268,6 +2274,7 @@ MonoBehaviour:
   - {fileID: 185554, guid: 377104e47bea14d419691f39b4dbfa58, type: 3}
   playerAnimator: {fileID: 1706913274}
   stoppingDistance: 1
+  fightStarted: 0
 --- !u!114 &2091946188
 MonoBehaviour:
   m_ObjectHideFlags: 0

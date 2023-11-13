@@ -80,6 +80,7 @@ public class Zombie : MonoBehaviour
         {
             ArmyLogic.currentZombs--;
             dead = true;
+            collectableControl.scoreCount -= 10;
             animator.SetBool("dead", true);
         }
     }

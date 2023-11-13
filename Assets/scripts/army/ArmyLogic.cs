@@ -14,8 +14,7 @@ public class ArmyLogic : MonoBehaviour
     private float moveSpeed = 3;
     private float strafeSpeed = 4;
     private int updatedScore;
-    private int recentScore = 1;
-    private GameObject mostRecentZombie;
+    private int recentScore = 0;
     public GameObject[] prefabsToInstantiate;
     private int prefabIndex;
     private List<float> xSpawnPoints = new List<float> { 0f, -.5f, .5f, -1f, 1f, -1.5f, 1.5f, -2f, 2f, -2.5f, 2.5f, -3f, 3f, -3.5f, 3.5f, -4f, 4f, -4.5f, 4.5f, -5f, 5f };
@@ -27,30 +26,31 @@ public class ArmyLogic : MonoBehaviour
     public bool fightStarted = false;
 
 
-
-
     // Start is called before the first frame update
     void Start()
     {
         prefabIndex = UnityEngine.Random.Range(0, 39);
+        updatedScore = collectableControl.scoreCount;
+        updateZombs();
     }
 
     // Update is called once per frame
     void Update()
     {
+        Zombie[] zombies = FindObjectsOfType<Zombie>();
+
         if (!inFight)
         {
+            //int rightmostDigit = collectableControl.scoreCount % 10;
+            //collectableControl.scoreCount = zombies.Length * 10 + rightmostDigit;
             updatedScore = collectableControl.scoreCount;
-            if (updatedScore > recentScore)
+            if (updatedScore != recentScore) // called every time the score changes
             {
                 recentScore = updatedScore;
                 playerAnimator.SetTrigger(animations[UnityEngine.Random.Range(0, 3)]);
                 updateZombs();
             }
 
-            Zombie[] zombies = FindObjectsOfType<Zombie>();
-            int rightmostDigit = collectableControl.scoreCount % 10;
-            collectableControl.scoreCount = zombies.Length * 10 + rightmostDigit;
             foreach (Zombie zombie in zombies)
             {
                 Zombie zombieScript = zombie.GetComponent<Zombie>();
@@ -75,7 +75,6 @@ public class ArmyLogic : MonoBehaviour
         else
         {
             Enemy[] enemies = FindObjectsOfType<Enemy>();
-            Zombie[] zombies = FindObjectsOfType<Zombie>();
             checkEnemiesCount(enemies); //checks to see if enemies are still alive. if not, fight ends.
             foreach (Enemy enemy in enemies)
             {
@@ -91,7 +90,7 @@ public class ArmyLogic : MonoBehaviour
                     }
                 }
 
-                if (enemyScript.hasTarget == true && enemyScript.target != null) // If enemy has a target, look at that target
+                if (enemyScript.hasTarget == true && enemyScript.target != null && enemyScript.dead == false) // If enemy has a target, look at that target
                 {
                     float step = moveSpeed * Time.deltaTime;
                     Vector3 targetPosition = enemyScript.target.transform.position;
@@ -174,36 +173,7 @@ public class ArmyLogic : MonoBehaviour
             fight.endFight();
 
         }
-
-        /* leaving here until I test and make sure it's unnecessary
-        if (enemies.Length == 0)
-        {
-            foreach (GameObject zombie in zombies)
-            {
-                Zombie zombieScript = zombie.GetComponent<Zombie>();
-                zombieScript.hasTarget = false;
-                MoveToOriginalPosition(zombie);
-            }
-            fight.endFight();
-        }*/
     }
-
-
-
-    /* leaving here in case I want to go back to old way of moving to original position
-    private void MoveToOriginalPosition(Zombie zombie)
-    {
-        Zombie zombieScript = zombie.GetComponent<Zombie>();
-        Vector3 originalPosition = new Vector3(
-        zombieScript.offset.x + player.transform.position.x,
-        .5f, // Set this to the appropriate ground level
-        zombieScript.offset.z + player.transform.position.z
-    );
-        zombie.transform.position = originalPosition;
-        zombie.transform.rotation = Quaternion.identity;
-    }
-    */
-
     private void MoveToOriginalPosition()
     {
         Zombie[] zombies = FindObjectsOfType<Zombie>();

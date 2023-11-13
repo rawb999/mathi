@@ -13,14 +13,16 @@ public class TileManager : MonoBehaviour
     public int numberOfTiles = 3;
     private List<GameObject> activeTiles = new List<GameObject>();
     private int count = 5;
+    public int numberOfEnemies;
+    public GameObject enemyPrefab;
     // Start is called before the first frame update
     void Start()
     {
-        spawnEnemyTile(0);
-        spawnTile(0);
-        spawnTile(0);
-        spawnTile(0);
-        spawnTile(0);
+        spawnTile();
+        spawnTile();
+        spawnTile();
+        spawnTile();
+        spawnTile();
     }
 
     // Update is called once per frame
@@ -30,19 +32,21 @@ public class TileManager : MonoBehaviour
         {
             if (count == 5)
             {
+                numberOfEnemies = Random.Range(1, 5);
                 count = 0;
                 spawnEnemyTile(0);
+                SpawnEnemies(numberOfEnemies);
             }
-            spawnTile(0);
+            spawnTile();
             count++;
             DeleteTile();
         }
     }
 
-    private void spawnTile(int tileIndex)
+    private void spawnTile()
     {
         
-        GameObject go = Instantiate(tilePrefabs[tileIndex], transform.forward * zSpawn, transform.rotation);
+        GameObject go = Instantiate(tilePrefabs[Random.Range(0, 6)], transform.forward * zSpawn, transform.rotation);
         activeTiles.Add(go);
         zSpawn += tileLength;
     }
@@ -59,4 +63,18 @@ public class TileManager : MonoBehaviour
         activeTiles.Add(go);
         zSpawn += tileLength;
     }
+    
+    void SpawnEnemies(int enemiesQuant)
+    {
+        for (int i = 0; i < enemiesQuant; i++)
+        {
+            // instantiate the prefab at a random position
+            Vector3 randomPosition = new Vector3(Random.Range(-10f, 10f), .5f, zSpawn - 20);
+            Quaternion randomRotation = Quaternion.Euler(0, 180, 0);
+            
+
+            Instantiate(enemyPrefab, randomPosition, randomRotation);
+        }
+    }
+    
 }
