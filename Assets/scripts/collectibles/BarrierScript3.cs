@@ -32,7 +32,7 @@ public class BarrierScript3 : MonoBehaviour
         if (number == 0)
         {
             variableNumber = Random.Range(0, 80);
-            barrierText.text = "x + " + variableNumber.ToString();
+            barrierText.text = "+ " + variableNumber.ToString();
         }
 
         if (number == 1)
