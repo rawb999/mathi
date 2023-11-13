@@ -10,19 +10,22 @@ public class TileManager : MonoBehaviour
     public float zSpawn = 0;
     public float tileLength = 20;
     public Transform playerTransform;
-    public int numberOfTiles = 3;
+    public int numberOfTiles = 4;
     private List<GameObject> activeTiles = new List<GameObject>();
-    private int count = 5;
+    private int count = 0;
     public int numberOfEnemies;
     public GameObject enemyPrefab;
     // Start is called before the first frame update
     void Start()
     {
+        numberOfEnemies = 5;
         spawnTile();
         spawnTile();
         spawnTile();
-        spawnTile();
-        spawnTile();
+        spawnEnemyTile(0);
+        SpawnEnemies(numberOfEnemies);
+        
+        
     }
 
     // Update is called once per frame
@@ -30,15 +33,18 @@ public class TileManager : MonoBehaviour
     {
         if (playerTransform.position.z > zSpawn - (numberOfTiles * tileLength)) 
         {
-            if (count == 5)
+            if (count == 3)
             {
-                numberOfEnemies = Random.Range(1, 5);
                 count = 0;
                 spawnEnemyTile(0);
                 SpawnEnemies(numberOfEnemies);
             }
-            spawnTile();
-            count++;
+            else
+            {
+                count++;
+                spawnTile();
+            }
+            
             DeleteTile();
         }
     }
@@ -66,14 +72,30 @@ public class TileManager : MonoBehaviour
     
     void SpawnEnemies(int enemiesQuant)
     {
-        for (int i = 0; i < enemiesQuant; i++)
+        for (int i = 0; i < (enemiesQuant); i++)
         {
             // instantiate the prefab at a random position
-            Vector3 randomPosition = new Vector3(Random.Range(-10f, 10f), .5f, zSpawn - 20);
+            Vector3 randomPosition = new Vector3(Random.Range(-7f, 7f), .5f, (zSpawn - 20) + Random.Range(0, 7f));
             Quaternion randomRotation = Quaternion.Euler(0, 180, 0);
             
 
             Instantiate(enemyPrefab, randomPosition, randomRotation);
+        }
+        collectableControl.waveNumber += 1;
+        numberOfEnemies += 2;
+
+        if (collectableControl.waveNumber > 4)
+        {
+            numberOfEnemies += 1;
+        }
+
+        if (collectableControl.waveNumber > 9)
+        {
+            numberOfEnemies += 1;
+        }
+        if (collectableControl.waveNumber > 14)
+        {
+            numberOfEnemies += 1;
         }
     }
     

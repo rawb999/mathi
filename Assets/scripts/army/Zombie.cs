@@ -39,6 +39,8 @@ public class Zombie : MonoBehaviour
 
         if (deadCooldown <= 0)
         {
+            ArmyLogic.currentZombs--;
+            collectableControl.scoreCount -= 10;
             Destroy(gameObject);
         }
         UpdateHealthBarVisibility();
@@ -78,9 +80,7 @@ public class Zombie : MonoBehaviour
         healthBar.UpdateHealthBar(health, maxHealth);
         if (health <= 0)
         {
-            ArmyLogic.currentZombs--;
             dead = true;
-            collectableControl.scoreCount -= 10;
             animator.SetBool("dead", true);
         }
     }
