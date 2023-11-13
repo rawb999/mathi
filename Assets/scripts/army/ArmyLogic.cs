@@ -31,7 +31,9 @@ public class ArmyLogic : MonoBehaviour
     {
         prefabIndex = UnityEngine.Random.Range(0, 39);
         updatedScore = collectableControl.scoreCount;
+        currentZombs = 0;
         updateZombs();
+       
     }
 
     // Update is called once per frame
@@ -41,14 +43,13 @@ public class ArmyLogic : MonoBehaviour
 
         if (!inFight)
         {
-            //int rightmostDigit = collectableControl.scoreCount % 10;
-            //collectableControl.scoreCount = zombies.Length * 10 + rightmostDigit;
             updatedScore = collectableControl.scoreCount;
-            if (updatedScore != recentScore) // called every time the score changes
+            if (updatedScore != recentScore) // called every time the score changes to see if we need to add zombies
             {
-                recentScore = updatedScore;
-                playerAnimator.SetTrigger(animations[UnityEngine.Random.Range(0, 3)]);
-                updateZombs();
+              recentScore = updatedScore;
+              playerAnimator.SetTrigger(animations[UnityEngine.Random.Range(0, 3)]);
+              updateZombs();
+              print("updated");
             }
 
             foreach (Zombie zombie in zombies)
@@ -217,7 +218,6 @@ public class ArmyLogic : MonoBehaviour
             Zombie zombieScript = zombie.GetComponent<Zombie>();
             zombieScript.offset = offset;
             currentZombs++;
-
         }
 
         

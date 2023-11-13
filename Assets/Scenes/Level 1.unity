@@ -769,6 +769,7 @@ MonoBehaviour:
   playerTransform: {fileID: 1276948259}
   numberOfTiles: 3
   numberOfEnemies: 0
+  enemyPrefab: {fileID: 6959163960691310432, guid: d4705c91e02e9884c99418eaa1875a7a, type: 3}
 --- !u!1 &1211482802
 GameObject:
   m_ObjectHideFlags: 0
