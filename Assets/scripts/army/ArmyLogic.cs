@@ -23,7 +23,8 @@ public class ArmyLogic : MonoBehaviour
     private List<string> animations = new List<string> { "attack", "attack2", "spellcast"};
     public static bool inFight = false;
     public float stoppingDistance = 1.0f; // This is the distance at which the zombie will stop from the enemy
-    public bool fightStarted = false;
+    public float healthRechargeCooldown = 6f;
+    public float updateArmyCooldown = 5f;
 
 
     // Start is called before the first frame update
@@ -32,8 +33,9 @@ public class ArmyLogic : MonoBehaviour
         prefabIndex = UnityEngine.Random.Range(0, 39);
         updatedScore = collectableControl.scoreCount;
         currentZombs = 0;
+        recentScore = 0;
         updateZombs();
-       
+        inFight = false;
     }
 
     // Update is called once per frame
@@ -43,18 +45,23 @@ public class ArmyLogic : MonoBehaviour
 
         if (!inFight)
         {
+            healthRechargeCooldown -= Time.deltaTime;
+            updateArmyCooldown -= Time.deltaTime;
             updatedScore = collectableControl.scoreCount;
-            if (updatedScore != recentScore) // called every time the score changes to see if we need to add zombies
+            if (updatedScore != recentScore && updateArmyCooldown < 0) // called every time the score changes to see if we need to add zombies
             {
               recentScore = updatedScore;
               playerAnimator.SetTrigger(animations[UnityEngine.Random.Range(0, 3)]);
               updateZombs();
-              print("updated");
             }
 
             foreach (Zombie zombie in zombies)
             {
                 Zombie zombieScript = zombie.GetComponent<Zombie>();
+                if (healthRechargeCooldown < 0 && zombieScript.health < 100)
+                {
+                    zombieScript.health = 100;
+                }
                 zombie.transform.Translate(Vector3.forward * Time.deltaTime * moveSpeed, Space.World); //moves the character forward
 
                 if (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.LeftArrow))  //if player is not heading outside the boundary
@@ -75,6 +82,7 @@ public class ArmyLogic : MonoBehaviour
         }
         else
         {
+            updateArmyCooldown = 5f;
             Enemy[] enemies = FindObjectsOfType<Enemy>();
             checkEnemiesCount(enemies); //checks to see if enemies are still alive. if not, fight ends.
             foreach (Enemy enemy in enemies)
@@ -177,6 +185,7 @@ public class ArmyLogic : MonoBehaviour
     }
     private void MoveToOriginalPosition()
     {
+        healthRechargeCooldown = 2f;
         Zombie[] zombies = FindObjectsOfType<Zombie>();
         int counter = 0;
         int row;
@@ -185,7 +194,6 @@ public class ArmyLogic : MonoBehaviour
             Zombie zombieScript = zombie.GetComponent<Zombie>();
             if (zombie != null && zombie.gameObject.activeSelf && zombieScript.dead == false)
             {
-                
                 zombieScript.hasTarget = false;
                 row = counter / 21;
                 Vector3 originalPosition = new Vector3(xSpawnPoints[counter - (21 * row)] + player.transform.position.x, .5f, zSpawnPoints[row] + player.transform.position.z);
@@ -196,6 +204,7 @@ public class ArmyLogic : MonoBehaviour
                 counter++;
             }
         }
+        
     }
 
     public void updateZombs()
