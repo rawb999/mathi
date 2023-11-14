@@ -8,13 +8,19 @@ using UnityEngine;
 
 public class ArmyLogic : MonoBehaviour
 {
-    public static int currentZombs = 0;
+    public static int currentZombs;
+    public static int currentTankZombs;
+    public static int currentMeleeZombs;
+    public static int currentRangedZombs;
     public GameObject player;
     private List<Tuple<float, float>> zombieSpawnPositions = new List<Tuple<float, float>>();
     private float moveSpeed = 3;
     private float strafeSpeed = 4;
-    private int updatedScore;
-    private int recentScore = 0;
+    private int updatedTankScore;
+    private int updatedRangedScore;
+    private int updatedMeleeScore;
+    private int recentTotalScore;
+    private int updatedTotalScore;
     public GameObject[] prefabsToInstantiate;
     private int prefabIndex;
     private List<float> xSpawnPoints = new List<float> { 0f, -.5f, .5f, -1f, 1f, -1.5f, 1.5f, -2f, 2f, -2.5f, 2.5f, -3f, 3f, -3.5f, 3.5f, -4f, 4f, -4.5f, 4.5f, -5f, 5f };
@@ -24,17 +30,23 @@ public class ArmyLogic : MonoBehaviour
     public static bool inFight = false;
     public float stoppingDistance = 1.0f; // This is the distance at which the zombie will stop from the enemy
     public float healthRechargeCooldown = 6f;
-    public float updateArmyCooldown = 1f;
-    
+    public static float updateArmyCooldown = 1f;
+    public static string recentType;
 
 
     // Start is called before the first frame update
     void Start()
     {
         prefabIndex = UnityEngine.Random.Range(0, 39);
-        updatedScore = collectableControl.scoreCount;
+        updatedTankScore = collectableControl.tankScoreCount;
+        updatedRangedScore = collectableControl.rangedScoreCount;
+        updatedMeleeScore = collectableControl.meleeScoreCount;
         currentZombs = 0;
-        recentScore = 0;
+        currentTankZombs = 0;
+        currentMeleeZombs = 0;
+        currentRangedZombs = 0;
+        recentTotalScore = 0;
+        updatedTotalScore = 0;
         updateZombs();
         inFight = false;
     }
@@ -48,12 +60,17 @@ public class ArmyLogic : MonoBehaviour
         {
             healthRechargeCooldown -= Time.deltaTime;
             updateArmyCooldown -= Time.deltaTime;
-            updatedScore = collectableControl.scoreCount;
-            if (updatedScore != recentScore && updateArmyCooldown < 0) // called every time the score changes to see if we need to add zombies
+            
+            if (updateArmyCooldown < 0) // called every time the score changes to see if we need to add zombies
             {
-              recentScore = updatedScore;
-              playerAnimator.SetTrigger(animations[UnityEngine.Random.Range(0, 3)]);
-              updateZombs();
+                
+                updatedTotalScore = collectableControl.totalScoreCount;
+                if (updatedTotalScore != recentTotalScore)
+                {
+                    recentTotalScore = updatedTotalScore;
+                    playerAnimator.SetTrigger(animations[UnityEngine.Random.Range(0, 3)]);
+                    updateZombs();
+                }
             }
 
             foreach (Zombie zombie in zombies)
@@ -133,23 +150,26 @@ public class ArmyLogic : MonoBehaviour
 
                     if (zombieScript.hasTarget == true && zombieScript.target != null && zombieScript.dead == false) // If zombie has a target, move towards that target
                     {
-                        float step = moveSpeed * Time.deltaTime;
-
                         Vector3 targetPosition = zombieScript.target.transform.position;
-
-                        // Calculate a position that is 1 unit away from the target
                         Vector3 directionToTarget = (targetPosition - zombie.transform.position).normalized;
-                        Vector3 stopPosition = targetPosition - directionToTarget;
+                        float distanceToTarget = Vector3.Distance(zombie.transform.position, targetPosition);
+                        if (distanceToTarget > zombieScript.attackRange) // If zombie is outside its range, move towards the target
+                        {
+                            float step = moveSpeed * Time.deltaTime;
 
-                        // Use Vector3.MoveTowards to move towards the stop position
-                        Vector3 newPosition = Vector3.MoveTowards(zombie.transform.position, stopPosition, step);
+                            // Calculate a position that is range units away from the target minus .1f
+                            Vector3 stopPosition = targetPosition - directionToTarget * (zombieScript.attackRange - .1f);
 
-                        // Apply the new position to the zombie
-                        zombie.transform.position = newPosition;
+                            // Use Vector3.MoveTowards to move towards the stop position
+                            Vector3 newPosition = Vector3.MoveTowards(zombie.transform.position, stopPosition, step);
 
-                        // Rotate the zombie to face the target
-                        Quaternion targetRotation = Quaternion.LookRotation(directionToTarget);
-                        zombie.transform.rotation = Quaternion.Slerp(zombie.transform.rotation, targetRotation, step);
+                            // Apply the new position to the zombie
+                            zombie.transform.position = newPosition;
+
+                            // Rotate the zombie to face the target
+                            Quaternion targetRotation = Quaternion.LookRotation(directionToTarget);
+                            zombie.transform.rotation = Quaternion.Slerp(zombie.transform.rotation, targetRotation, step);
+                        }
                     }
                 }
             }
@@ -209,12 +229,29 @@ public class ArmyLogic : MonoBehaviour
 
     public void updateZombs()
     {
-        int neededZombies = collectableControl.scoreCount / 10;
-
+        int neededZombs = updatedTotalScore / 10;
+        int neededTankZombs = updatedTankScore / 10;
+        int neededMeleeZombs = updatedMeleeScore / 10;
+        int neededRangedZombs = updatedRangedScore / 10;
         //if the # of spawned zombies is not equal to how many there should be
-        while ((currentZombs < neededZombies) && (currentZombs < 210))
+        while ((currentZombs < neededZombs) && (currentZombs < 210))
         {
+            if (recentType == "melee")
+            {
+                currentMeleeZombs++;
+            }
+
+            if (recentType == "ranged")
+            {
+                currentRangedZombs++;
+            }
+
+            if (recentType == "tank")
+            {
+                currentTankZombs++;
+            }
             prefabIndex = UnityEngine.Random.Range(0, 39);
+            prefabsToInstantiate[prefabIndex].SetActive(false); //set the prefab to inactive first
             int row = currentZombs / 21;
             CameraController.row = Mathf.Min(row, 4);
             //spawn the zombie in its proper position based on its row and column
@@ -222,10 +259,13 @@ public class ArmyLogic : MonoBehaviour
             Quaternion spawnRotation = Quaternion.identity; // No rotation
 
             // Instantiate the prefab
-            GameObject zombie = Instantiate(prefabsToInstantiate[prefabIndex], spawnPosition, spawnRotation); //CHECK THIS LATER MAY CAUSE BUG
+            GameObject zombie = Instantiate(prefabsToInstantiate[prefabIndex], spawnPosition, spawnRotation); //instantiate the zombie
             Vector3 offset = zombie.transform.position - player.transform.position;
             Zombie zombieScript = zombie.GetComponent<Zombie>();
             zombieScript.offset = offset;
+            zombieScript.type = recentType;
+            prefabsToInstantiate[prefabIndex].SetActive(true); //set the zombie back to active now that the type is set
+            zombie.SetActive(true);
             currentZombs++;
         }
     }

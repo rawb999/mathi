@@ -33,8 +33,6 @@ public class Pause_Menu : MonoBehaviour
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
         Time.timeScale = 1;
 
-        collectableControl.scoreCount = 1;
-
 
     }
 }

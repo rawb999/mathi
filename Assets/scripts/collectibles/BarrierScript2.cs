@@ -75,15 +75,21 @@ public class BarrierScript2 : MonoBehaviour
     private void Random1()
     {
         // Update the score.
-
-        collectableControl.scoreCount += variableNumber;
+        int added = variableNumber;
+        ArmyLogic.updateArmyCooldown = .5f;
+        collectableControl.rangedScoreCount += added;
+        collectableControl.totalScoreCount += added;
+        ArmyLogic.recentType = "tank";
     }
 
     private void Random2()
     {
         // Update the score.
-
-        collectableControl.scoreCount += (variableNumber * variableNumber2 + variableNumber3);
+        int added = variableNumber * variableNumber2 + variableNumber3;
+        ArmyLogic.updateArmyCooldown = .5f;
+        collectableControl.rangedScoreCount += added;
+        collectableControl.totalScoreCount += added;
+        ArmyLogic.recentType = "tank";
     }
 
 
