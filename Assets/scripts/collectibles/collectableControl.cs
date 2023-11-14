@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 public class collectableControl : MonoBehaviour
 {
-    public static int scoreCount = 1;
+    public static int scoreCount = 2000;
     public GameObject scoreCountDisplay;
     public static int waveNumber = 0;
     public GameObject waveCountDisplay;

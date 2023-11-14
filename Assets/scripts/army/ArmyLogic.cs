@@ -18,13 +18,14 @@ public class ArmyLogic : MonoBehaviour
     public GameObject[] prefabsToInstantiate;
     private int prefabIndex;
     private List<float> xSpawnPoints = new List<float> { 0f, -.5f, .5f, -1f, 1f, -1.5f, 1.5f, -2f, 2f, -2.5f, 2.5f, -3f, 3f, -3.5f, 3.5f, -4f, 4f, -4.5f, 4.5f, -5f, 5f };
-    private List<float> zSpawnPoints = new List<float> { -2f, -3f, -4f, -5f };
+    private List<float> zSpawnPoints = new List<float> { -2f, -3f, -4f, -5f, -6f, -7f , -8f, -9f, -10f, -11f,};
     public Animator playerAnimator;
     private List<string> animations = new List<string> { "attack", "attack2", "spellcast"};
     public static bool inFight = false;
     public float stoppingDistance = 1.0f; // This is the distance at which the zombie will stop from the enemy
     public float healthRechargeCooldown = 6f;
-    public float updateArmyCooldown = 5f;
+    public float updateArmyCooldown = 1f;
+    
 
 
     // Start is called before the first frame update
@@ -82,7 +83,8 @@ public class ArmyLogic : MonoBehaviour
         }
         else
         {
-            updateArmyCooldown = 5f;
+            CameraController.row = 0;
+            updateArmyCooldown = 1f;
             Enemy[] enemies = FindObjectsOfType<Enemy>();
             checkEnemiesCount(enemies); //checks to see if enemies are still alive. if not, fight ends.
             foreach (Enemy enemy in enemies)
@@ -150,12 +152,8 @@ public class ArmyLogic : MonoBehaviour
                         zombie.transform.rotation = Quaternion.Slerp(zombie.transform.rotation, targetRotation, step);
                     }
                 }
-                
             }
-
-            
         }
-
     }
 
     public void checkEnemiesCount(Enemy[] enemies) //checks to see if all enemies are dead
@@ -202,6 +200,8 @@ public class ArmyLogic : MonoBehaviour
                 Vector3 offset = zombie.transform.position - player.transform.position;
                 zombieScript.offset = offset;
                 counter++;
+
+                CameraController.row = Mathf.Min(row, 4);
             }
         }
         
@@ -212,11 +212,11 @@ public class ArmyLogic : MonoBehaviour
         int neededZombies = collectableControl.scoreCount / 10;
 
         //if the # of spawned zombies is not equal to how many there should be
-        while ((currentZombs < neededZombies) && (currentZombs < 84))
+        while ((currentZombs < neededZombies) && (currentZombs < 210))
         {
             prefabIndex = UnityEngine.Random.Range(0, 39);
             int row = currentZombs / 21;
-            CameraController.row = row;
+            CameraController.row = Mathf.Min(row, 4);
             //spawn the zombie in its proper position based on its row and column
             Vector3 spawnPosition = new Vector3(player.transform.position.x + xSpawnPoints[currentZombs - (21 * row)], .5f, player.transform.position.z + zSpawnPoints[row]);
             Quaternion spawnRotation = Quaternion.identity; // No rotation
@@ -228,9 +228,6 @@ public class ArmyLogic : MonoBehaviour
             zombieScript.offset = offset;
             currentZombs++;
         }
-
-        
-
     }
 
     private Enemy FindNearestEnemy(Zombie zombie, Enemy[] enemies)
@@ -273,7 +270,6 @@ public class ArmyLogic : MonoBehaviour
                 }
             }
         }
-
         return nearestEnemy;
     }
 
