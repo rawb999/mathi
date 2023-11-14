@@ -79,6 +79,11 @@ public class BarrierScript3 : MonoBehaviour
                 Random2();
             }
 
+            if (number == 2)
+            {
+                Random3();
+            }
+
 
         }
     }
@@ -86,7 +91,7 @@ public class BarrierScript3 : MonoBehaviour
     private void Random1()
     {
         // Update the score.
-        int added = variableNumber;
+        int added = variableNumber + variableNumber2;
         ArmyLogic.updateArmyCooldown = .5f;
         collectableControl.rangedScoreCount += added;
         collectableControl.totalScoreCount += added;
