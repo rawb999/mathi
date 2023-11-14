@@ -20,6 +20,7 @@ public class BarrierScript1 : MonoBehaviour
     private int variableNumber2;
 
     private int variableNumber3;
+    private int variableNumber4;
 
     public GameObject player;
 
@@ -29,20 +30,30 @@ public class BarrierScript1 : MonoBehaviour
     void Start()
     {
         //generate a random number for the equation to be used
-        number = Random.Range(0, 2);
+        number = Random.Range(0, 3);
 
         if (number == 0)
         {
-            variableNumber = Random.Range(0, 80);
-            barrierText.text = "+ " + variableNumber.ToString();
+            variableNumber = Random.Range(0, 60);
+            variableNumber2 = Random.Range(0, 60);
+            barrierText.text = variableNumber.ToString() + " + " + variableNumber2.ToString();
         }
 
         if (number == 1)
         {
-            variableNumber = Random.Range(1, 8);
-            variableNumber2 = Random.Range(1, 8);
+            variableNumber = Random.Range(1, 10);
+            variableNumber2 = Random.Range(1, 10);
             variableNumber3 = Random.Range(1, 50);
             barrierText.text = "(" + variableNumber.ToString() + " * " + variableNumber2.ToString() + ") + " + variableNumber3.ToString();
+        }
+
+        if (number == 2)
+        {
+            variableNumber = Random.Range(1, 8);
+            variableNumber2 = Random.Range(1, 8);
+            variableNumber3 = Random.Range(1, 8);
+            variableNumber4 = Random.Range(1, 8);
+            barrierText.text = "(" + variableNumber.ToString() + " * " + variableNumber2.ToString() + ") + (" + variableNumber3.ToString() + " * " + variableNumber4.ToString() + ")";
         }
 
     }
@@ -91,7 +102,16 @@ public class BarrierScript1 : MonoBehaviour
         collectableControl.meleeScoreCount += added;
         collectableControl.totalScoreCount += added;
         ArmyLogic.recentType = "melee";
-        
+
+    }
+
+    private void Random3()
+    {
+        int added = (variableNumber * variableNumber2) + (variableNumber3 * variableNumber4);
+        ArmyLogic.updateArmyCooldown = .5f;
+        collectableControl.meleeScoreCount += added;
+        collectableControl.totalScoreCount += added;
+        ArmyLogic.recentType = "melee";
     }
 
 

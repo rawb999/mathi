@@ -1107,6 +1107,11 @@ MonoBehaviour:
   hasTarget: 0
   attackCooldown: 2
   dead: 0
+  maxHealth: 100
+  offset: {x: 0, y: 0, z: 0}
+  healthBar: {fileID: 0}
+  type: 
+  attackRange: 0
 --- !u!54 &5691712494699637866
 Rigidbody:
   m_ObjectHideFlags: 0

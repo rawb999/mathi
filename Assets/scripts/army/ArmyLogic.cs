@@ -21,8 +21,8 @@ public class ArmyLogic : MonoBehaviour
     private int updatedMeleeScore;
     private int recentTotalScore;
     private int updatedTotalScore;
-    public GameObject[] prefabsToInstantiate;
-    private int prefabIndex;
+    public GameObject[] prefabsToInstantiate; //0 to 38 are melee zombies, 39 is tank, 40 is ranger
+    private int prefabIndex; 
     private List<float> xSpawnPoints = new List<float> { 0f, -.5f, .5f, -1f, 1f, -1.5f, 1.5f, -2f, 2f, -2.5f, 2.5f, -3f, 3f, -3.5f, 3.5f, -4f, 4f, -4.5f, 4.5f, -5f, 5f };
     private List<float> zSpawnPoints = new List<float> { -2f, -3f, -4f, -5f, -6f, -7f , -8f, -9f, -10f, -11f,};
     public Animator playerAnimator;
@@ -37,7 +37,7 @@ public class ArmyLogic : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        prefabIndex = UnityEngine.Random.Range(0, 39);
+         
         updatedTankScore = collectableControl.tankScoreCount;
         updatedRangedScore = collectableControl.rangedScoreCount;
         updatedMeleeScore = collectableControl.meleeScoreCount;
@@ -61,6 +61,7 @@ public class ArmyLogic : MonoBehaviour
             healthRechargeCooldown -= Time.deltaTime;
             updateArmyCooldown -= Time.deltaTime;
             
+
             if (updateArmyCooldown < 0) // called every time the score changes to see if we need to add zombies
             {
                 
@@ -76,9 +77,9 @@ public class ArmyLogic : MonoBehaviour
             foreach (Zombie zombie in zombies)
             {
                 Zombie zombieScript = zombie.GetComponent<Zombie>();
-                if (healthRechargeCooldown < 0 && zombieScript.health < 100)
+                if (healthRechargeCooldown < 0 && zombieScript.health < zombieScript.maxHealth)
                 {
-                    zombieScript.health = 100;
+                    zombieScript.health = zombieScript.maxHealth;
                 }
                 zombie.transform.Translate(Vector3.forward * Time.deltaTime * moveSpeed, Space.World); //moves the character forward
 
@@ -239,18 +240,21 @@ public class ArmyLogic : MonoBehaviour
             if (recentType == "melee")
             {
                 currentMeleeZombs++;
+                prefabIndex = UnityEngine.Random.Range(0, 39);
             }
 
             if (recentType == "ranged")
             {
                 currentRangedZombs++;
+                prefabIndex = 40;
             }
 
             if (recentType == "tank")
             {
                 currentTankZombs++;
+                prefabIndex = 39;
             }
-            prefabIndex = UnityEngine.Random.Range(0, 39);
+            
             prefabsToInstantiate[prefabIndex].SetActive(false); //set the prefab to inactive first
             int row = currentZombs / 21;
             CameraController.row = Mathf.Min(row, 4);
