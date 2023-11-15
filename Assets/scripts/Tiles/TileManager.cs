@@ -91,11 +91,11 @@ public class TileManager : MonoBehaviour
 
         if (collectableControl.waveNumber > 9)
         {
-            numberOfEnemies += 1;
+            numberOfEnemies += 3;
         }
         if (collectableControl.waveNumber > 14)
         {
-            numberOfEnemies += 1;
+            numberOfEnemies += 5;
         }
     }
     

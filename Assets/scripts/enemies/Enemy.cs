@@ -17,6 +17,7 @@ public class Enemy : MonoBehaviour
     public Animator animator;
     public float attackCooldown = 1f; // seconds
     private float attackCooldownLeft = 0f;
+    private int attackDamage;
 
     private void Awake()
     {
@@ -25,6 +26,18 @@ public class Enemy : MonoBehaviour
 
     void Start()
     {
+        if (collectableControl.waveNumber < 5)
+        {
+            attackDamage = 20;
+        } else if (collectableControl.waveNumber < 10 && collectableControl.waveNumber >= 5)
+        {
+            attackDamage = 30;
+        } else if (collectableControl.waveNumber < 15 && collectableControl.waveNumber >= 10)
+        {
+            attackDamage = 50;
+        }
+
+
         health = maxHealth;
 
         healthBar.UpdateHealthBar(health, maxHealth);
@@ -63,7 +76,7 @@ public class Enemy : MonoBehaviour
                 {
                     //animator.SetTrigger("attackTrigger");
                     attackCooldownLeft = attackCooldown;
-                    target.TakeDamage(10);
+                    target.TakeDamage(attackDamage);
                 }
             }
         }

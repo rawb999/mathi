@@ -24,7 +24,7 @@ public class ArmyLogic : MonoBehaviour
     public GameObject[] prefabsToInstantiate; //0 to 38 are melee zombies, 39 is tank, 40 is ranger
     private int prefabIndex; 
     private List<float> xSpawnPoints = new List<float> { 0f, -.5f, .5f, -1f, 1f, -1.5f, 1.5f, -2f, 2f, -2.5f, 2.5f, -3f, 3f, -3.5f, 3.5f, -4f, 4f, -4.5f, 4.5f, -5f, 5f };
-    private List<float> zSpawnPoints = new List<float> { -2f, -3f, -4f, -5f, -6f, -7f , -8f, -9f, -10f, -11f,};
+    private List<float> zSpawnPoints = new List<float> { -2f, -3f, -4f, -5f, -6f, -7f , -8f, -9f, -10f, -11f, -12f, -13f, -14f, -15f};
     public Animator playerAnimator;
     private List<string> animations = new List<string> { "attack", "attack2", "spellcast"};
     public static bool inFight = false;
