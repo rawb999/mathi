@@ -71,6 +71,7 @@ public class ArmyLogic : MonoBehaviour
                     recentTotalScore = updatedTotalScore;
                     playerAnimator.SetTrigger(animations[UnityEngine.Random.Range(0, 3)]);
                     updateZombs();
+                    resetArmy();
                 }
             }
 
@@ -192,40 +193,47 @@ public class ArmyLogic : MonoBehaviour
         if (!stillSomeAlive)
         {
             Zombie[] zombies = FindObjectsOfType<Zombie>();
-            MoveToOriginalPosition();
-            foreach (Zombie zombie in zombies)
-            {
-                Zombie zombieScript = zombie.GetComponent<Zombie>();
-                zombieScript.hasTarget = false;
-            }
+            resetArmy();
             fight.endFight();
 
         }
     }
-    private void MoveToOriginalPosition()
+
+    private int resetPositions(string type, Zombie[] zombies, int counter)
+    {
+        int row;
+        foreach (Zombie zombie in zombies)
+        {
+            if (zombie != null)
+            {
+                Zombie zombieScript = zombie.GetComponent<Zombie>();
+                if (zombie.gameObject.activeSelf && zombieScript.dead == false && zombieScript.type == type)
+                {
+                    zombieScript.hasTarget = false;
+                    row = counter / 21;
+                    Vector3 originalPosition = new Vector3(xSpawnPoints[counter - (21 * row)] + player.transform.position.x, .5f, zSpawnPoints[row] + player.transform.position.z);
+                    zombie.transform.position = originalPosition;
+                    zombie.transform.rotation = Quaternion.identity;
+                    Vector3 offset = zombie.transform.position - player.transform.position;
+                    zombieScript.offset = offset;
+                    counter++;
+
+                    CameraController.row = Mathf.Min(row, 4);
+                }
+            }
+            
+        }
+        return counter;
+    }
+
+    private void resetArmy()
     {
         healthRechargeCooldown = 2f;
         Zombie[] zombies = FindObjectsOfType<Zombie>();
         int counter = 0;
-        int row;
-        foreach (Zombie zombie in zombies)
-        {
-            Zombie zombieScript = zombie.GetComponent<Zombie>();
-            if (zombie != null && zombie.gameObject.activeSelf && zombieScript.dead == false)
-            {
-                zombieScript.hasTarget = false;
-                row = counter / 21;
-                Vector3 originalPosition = new Vector3(xSpawnPoints[counter - (21 * row)] + player.transform.position.x, .5f, zSpawnPoints[row] + player.transform.position.z);
-                zombie.transform.position = originalPosition;
-                zombie.transform.rotation = Quaternion.identity;
-                Vector3 offset = zombie.transform.position - player.transform.position;
-                zombieScript.offset = offset;
-                counter++;
-
-                CameraController.row = Mathf.Min(row, 4);
-            }
-        }
-        
+        counter = resetPositions("tank", zombies, counter);
+        counter = resetPositions("melee", zombies, counter);
+        counter = resetPositions("ranged", zombies, counter);
     }
 
     public void updateZombs()
