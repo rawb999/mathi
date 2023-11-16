@@ -16,23 +16,23 @@ public class audioManager : MonoBehaviour
 
     public static audioManager instance;
 
-    private void Awake()
-    {
-        if (instance == null)
-        {
-            instance = this;
-            DontDestroyOnLoad(gameObject);
-        }
-        else 
-        {
-            Destroy(gameObject);
-        }
-    }
+   // private void Awake()
+    //{
+     //   if (instance == null)
+      //  {
+       //     instance = this;
+        //    DontDestroyOnLoad(gameObject);
+       // }
+       // else 
+       // {
+        //    Destroy(gameObject);
+       // }
+ //   }
 
     public void Start()
     {
         musicSource.clip = background;
-       // musicSource.Play();
+        musicSource.Play();
        // if ()
        // { 
         
