@@ -7746,7 +7746,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   musicSource: {fileID: 1982792010}
   SFXSource: {fileID: 2039634932}
-  background: {fileID: 8300000, guid: e76663dfc4ce3ae439a1642d27ccefe3, type: 3}
+  background: {fileID: 8300000, guid: 5cecf4565a9f4df449b0f3021d5c00f3, type: 3}
   menuSelect: {fileID: 8300000, guid: d46323e22e74e46baa241cbf48c85671, type: 3}
 --- !u!4 &1655095467
 Transform:
@@ -9264,7 +9264,7 @@ AudioSource:
   m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
-  m_audioClip: {fileID: 8300000, guid: e76663dfc4ce3ae439a1642d27ccefe3, type: 3}
+  m_audioClip: {fileID: 8300000, guid: 5cecf4565a9f4df449b0f3021d5c00f3, type: 3}
   m_PlayOnAwake: 1
   m_Volume: 1
   m_Pitch: 1
