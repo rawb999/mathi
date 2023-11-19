@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "51464865378",
+    "project_id": "mathi-db-af081",
+    "storage_bucket": "mathi-db-af081.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:51464865378:android:83281c2727a2c2a2bc733b",
+        "android_client_info": {
+          "package_name": "com.iss.mathi"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA04viFhylzF-fHxT6Ay0-SaCmrKY2vGqk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
