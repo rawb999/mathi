@@ -460,6 +460,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 820853249593283765, guid: 9720f1d8164add141b0e8e9136cd14e6, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 7a81c8ac0e15c1e4b84f7b8f06e45c9d, type: 3}
     - target: {fileID: 876441871759388569, guid: 9720f1d8164add141b0e8e9136cd14e6, type: 3}
       propertyPath: m_Name
       value: Canvas
@@ -556,6 +560,10 @@ PrefabInstance:
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
       objectReference: {fileID: 1654108906}
+    - target: {fileID: 5342308169887277279, guid: 9720f1d8164add141b0e8e9136cd14e6, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 138fbf7b91d64324fa016feec2dddca9, type: 3}
     - target: {fileID: 5677495855143521514, guid: 9720f1d8164add141b0e8e9136cd14e6, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
@@ -564,6 +572,14 @@ PrefabInstance:
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Target
       value: 
       objectReference: {fileID: 1654108906}
+    - target: {fileID: 6478876401695049543, guid: 9720f1d8164add141b0e8e9136cd14e6, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 8097bc5db41324b4bab9afa3ae9a2860, type: 3}
+    - target: {fileID: 7786581043993127471, guid: 9720f1d8164add141b0e8e9136cd14e6, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 935819aa04055ab42b8d969d6c7287d3, type: 3}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
