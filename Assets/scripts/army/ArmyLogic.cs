@@ -19,8 +19,8 @@ public class ArmyLogic : MonoBehaviour
     private int updatedTankScore;
     private int updatedRangedScore;
     private int updatedMeleeScore;
-    private int recentTotalScore;
-    private int updatedTotalScore;
+    public static int recentTotalScore; // changed for testing from private int
+    public static int updatedTotalScore; // same as above
     public GameObject[] prefabsToInstantiate; //0 to 38 are melee zombies, 39 is tank, 40 is ranger
     private int prefabIndex; 
     private List<float> xSpawnPoints = new List<float> { 0f, -.5f, .5f, -1f, 1f, -1.5f, 1.5f, -2f, 2f, -2.5f, 2.5f, -3f, 3f, -3.5f, 3.5f, -4f, 4f, -4.5f, 4.5f, -5f, 5f };
@@ -41,12 +41,12 @@ public class ArmyLogic : MonoBehaviour
         updatedTankScore = collectableControl.tankScoreCount;
         updatedRangedScore = collectableControl.rangedScoreCount;
         updatedMeleeScore = collectableControl.meleeScoreCount;
-        currentZombs = 0;
+        currentZombs = 1;
         currentTankZombs = 0;
-        currentMeleeZombs = 0;
+        currentMeleeZombs = 1;
         currentRangedZombs = 0;
-        recentTotalScore = 0;
-        updatedTotalScore = 0;
+        recentTotalScore = 10;
+        updatedTotalScore = 10;
         updateZombs();
         inFight = false;
     }

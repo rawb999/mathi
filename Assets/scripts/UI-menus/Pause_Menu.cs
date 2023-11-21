@@ -32,7 +32,19 @@ public class Pause_Menu : MonoBehaviour
        
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
         Time.timeScale = 1;
+        ArmyLogic.currentZombs = 1;
+        ArmyLogic.currentTankZombs = 0;
+        ArmyLogic.currentMeleeZombs = 1;
+        ArmyLogic.currentRangedZombs = 0;
+        ArmyLogic.recentTotalScore = 10;
+        ArmyLogic.updatedTotalScore = 10;
+        collectableControl.waveNumber = 0;
 
 
+    }
+    public void quit()
+    {
+        Application.Quit();
+        
     }
 }
