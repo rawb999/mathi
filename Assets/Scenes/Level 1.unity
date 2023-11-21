@@ -3029,6 +3029,7 @@ GameObject:
   - component: {fileID: 1306877065}
   - component: {fileID: 1306877064}
   - component: {fileID: 1306877066}
+  - component: {fileID: 1306877067}
   m_Layer: 0
   m_Name: levelControl
   m_TagString: Untagged
@@ -3080,6 +3081,18 @@ MonoBehaviour:
   scoreCountDisplay: {fileID: 1292477194}
   waveCountDisplay: {fileID: 738260476}
   game_End: {fileID: 1288531092}
+--- !u!114 &1306877067
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1306877063}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7fb42ab31017dce49ba1b0e0e569be69, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1469602678
 GameObject:
   m_ObjectHideFlags: 0

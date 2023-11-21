@@ -59,7 +59,6 @@ public class ArmyLogic : MonoBehaviour
                 updatedTotalScore = collectableControl.totalScoreCount;
                 if (updatedTotalScore != recentTotalScore)
                 {
-                    print(currentZombs.ToString());
                     recentTotalScore = updatedTotalScore;
                     playerAnimator.SetTrigger(animations[UnityEngine.Random.Range(0, 3)]);
                     updateZombs();
