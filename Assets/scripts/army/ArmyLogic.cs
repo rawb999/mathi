@@ -32,23 +32,14 @@ public class ArmyLogic : MonoBehaviour
     public float healthRechargeCooldown = 6f;
     public static float updateArmyCooldown = 1f;
     public static string recentType;
+    public static bool waveStarted = false;
 
 
     // Start is called before the first frame update
     void Start()
     {
-         
-        updatedTankScore = collectableControl.tankScoreCount;
-        updatedRangedScore = collectableControl.rangedScoreCount;
-        updatedMeleeScore = collectableControl.meleeScoreCount;
-        currentZombs = 1;
-        currentTankZombs = 0;
-        currentMeleeZombs = 1;
-        currentRangedZombs = 0;
-        recentTotalScore = 10;
-        updatedTotalScore = 10;
+        Reset.resetValues();
         updateZombs();
-        inFight = false;
     }
 
     // Update is called once per frame
@@ -68,6 +59,7 @@ public class ArmyLogic : MonoBehaviour
                 updatedTotalScore = collectableControl.totalScoreCount;
                 if (updatedTotalScore != recentTotalScore)
                 {
+                    print(currentZombs.ToString());
                     recentTotalScore = updatedTotalScore;
                     playerAnimator.SetTrigger(animations[UnityEngine.Random.Range(0, 3)]);
                     updateZombs();
@@ -102,6 +94,12 @@ public class ArmyLogic : MonoBehaviour
         }
         else
         {
+            if (waveStarted == false)
+            {
+                collectableControl.waveNumber++;
+                waveStarted = true;
+            }
+            
             CameraController.row = 0;
             updateArmyCooldown = 1f;
             Enemy[] enemies = FindObjectsOfType<Enemy>();
@@ -192,6 +190,7 @@ public class ArmyLogic : MonoBehaviour
 
         if (!stillSomeAlive)
         {
+            waveStarted = false;
             Zombie[] zombies = FindObjectsOfType<Zombie>();
             resetArmy();
             fight.endFight();

@@ -13,6 +13,7 @@ public class collectableControl : MonoBehaviour
     public GameObject waveCountDisplay;
     public static int totalScoreCount = 10; // Lupe here changed this to 11  was 0, for the game over test
     public Game_managerUI game_End; // for refrence to end the game 
+    public static bool playerDead = false;
 
     private bool isDead; // to make sure it isn't constantly happening
     void Update()
@@ -24,14 +25,9 @@ public class collectableControl : MonoBehaviour
         // THis should end the game - Lupe 
         if (totalScoreCount < 10 && !isDead)
         {
-            isDead = true;
+            playerDead = true;
             game_End.gameOver();
-            waveNumber = 0;
-            totalScoreCount = 10;
-            tankScoreCount = 0;
-            meleeScoreCount = 10;
-            rangedScoreCount = 0;
-
+            
         }
     }
 

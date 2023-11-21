@@ -9,5 +9,6 @@ public class Start_Menu : MonoBehaviour
     {
         
         SceneManager.LoadSceneAsync(2);
+        Reset.resetValues();
     }
 }

@@ -81,7 +81,6 @@ public class TileManager : MonoBehaviour
 
             Instantiate(enemyPrefab, randomPosition, randomRotation);
         }
-        collectableControl.waveNumber += 1;
         numberOfEnemies += 2;
 
         if (collectableControl.waveNumber > 4)
