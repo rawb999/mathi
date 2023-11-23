@@ -12,16 +12,16 @@ public class web_request : MonoBehaviour
     void Start()
     {
         // The following are tests.
-        StartCoroutine(GetDate("http://localhost/backend-time/getdate.php"));  //URL of file goes here 
-        StartCoroutine(Getusertest("http://localhost/MATHi/register_users.php"));
-        StartCoroutine(Login("Batman", "Superman"));
-
+        // StartCoroutine(GetDate("http://localhost/backend-time/getdate.php"));  //URL of file goes here 
+        //StartCoroutine(Getusertest("http://localhost/MATHi/register_users.php"));
+        //StartCoroutine(Login("Batman", "Superman"));
+       // StartCoroutine(User_Registration("popsie", "lol0"));
 
         // A non-existing page.
         //StartCoroutine(GetRequest("https://error.html"));
     }
     //--------------------  TEST FOR Retrieving Date ---------------------------------
-    IEnumerator GetDate(string uri)
+    public IEnumerator GetDate(string uri)
     {
         using (UnityWebRequest webRequest = UnityWebRequest.Get(uri))
         {
@@ -47,7 +47,7 @@ public class web_request : MonoBehaviour
         }
     }
     //--------------------  TEST FOR looking at users ---------------------------------
-    IEnumerator Getusertest(string uri)
+    public IEnumerator Getusertest(string uri)
     {
         using (UnityWebRequest webRequest = UnityWebRequest.Get(uri))
         {
@@ -73,13 +73,37 @@ public class web_request : MonoBehaviour
         }
     }
     //--------------------  TEST FOR LOGGING IN ---------------------------------
-    IEnumerator Login(string username, string password)
+    public IEnumerator Login(string email, string password)
+    {
+        WWWForm form = new WWWForm();
+        form.AddField("LoginEmail", email);
+        form.AddField("LoginPass", password);
+
+        using (UnityWebRequest www = UnityWebRequest.Post("http://localhost/MATHi/login.php", form))
+        {
+            yield return www.SendWebRequest();
+
+            if (www.result != UnityWebRequest.Result.Success)
+            {
+                Debug.Log(www.error);
+            }
+            else
+            {
+                Debug.Log(www.downloadHandler.text);
+            }
+
+        }
+
+    }
+    //================================ User Registration Call ==============================
+
+   public  IEnumerator User_Registration(string username, string password)
     {
         WWWForm form = new WWWForm();
         form.AddField("LoginUser", username);
         form.AddField("LoginPass", password);
 
-        using (UnityWebRequest www = UnityWebRequest.Post("http://localhost/MATHi/login.php", form))
+        using (UnityWebRequest www = UnityWebRequest.Post("http://localhost/MATHi/user_registration.php", form))
         {
             yield return www.SendWebRequest();
 
