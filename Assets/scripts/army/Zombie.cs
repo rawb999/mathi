@@ -113,9 +113,9 @@ public class Zombie : MonoBehaviour
                 attackCooldown = 1f;
                 break;
             case "ranged":
-                maxHealth = 50; 
+                maxHealth = 70;
                 attackDamage = 4;
-                attackRange = 6.2f;
+                attackRange = 7;
                 attackCooldown = 1f;
                 break;
         }

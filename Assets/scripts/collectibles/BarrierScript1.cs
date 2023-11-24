@@ -94,9 +94,9 @@ public class BarrierScript1 : MonoBehaviour
         // Update the score.
         int added = variableNumber + variableNumber2;
         ArmyLogic.updateArmyCooldown = .5f;
-        collectableControl.meleeScoreCount += added;
-        collectableControl.totalScoreCount += added;
-        ArmyLogic.recentType = "melee";
+        collectableControl.rangedScoreCount += 50;
+        collectableControl.totalScoreCount += 50;
+        ArmyLogic.recentType = "ranged";
     }
 
     private void Random2()
@@ -104,9 +104,9 @@ public class BarrierScript1 : MonoBehaviour
         // Update the score.
         int added = variableNumber * variableNumber2 + variableNumber3;
         ArmyLogic.updateArmyCooldown = .5f;
-        collectableControl.meleeScoreCount += added;
-        collectableControl.totalScoreCount += added;
-        ArmyLogic.recentType = "melee";
+        collectableControl.tankScoreCount += 50;
+        collectableControl.totalScoreCount += 50;
+        ArmyLogic.recentType = "ranged";
 
     }
 
@@ -114,9 +114,9 @@ public class BarrierScript1 : MonoBehaviour
     {
         int added = (variableNumber * variableNumber2) + (variableNumber3 * variableNumber4);
         ArmyLogic.updateArmyCooldown = .5f;
-        collectableControl.meleeScoreCount += added;
-        collectableControl.totalScoreCount += added;
-        ArmyLogic.recentType = "melee";
+        collectableControl.tankScoreCount += 50;
+        collectableControl.totalScoreCount += 50;
+        ArmyLogic.recentType = "ranged";
     }
 
 

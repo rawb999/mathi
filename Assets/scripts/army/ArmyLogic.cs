@@ -28,11 +28,14 @@ public class ArmyLogic : MonoBehaviour
     public Animator playerAnimator;
     private List<string> animations = new List<string> { "attack", "attack2", "spellcast"};
     public static bool inFight = false;
-    public float stoppingDistance = 1.0f; // This is the distance at which the zombie will stop from the enemy
     public float healthRechargeCooldown = 6f;
     public static float updateArmyCooldown = 1f;
     public static string recentType;
     public static bool waveStarted = false;
+    public float avoidanceThreshold = 1f; 
+    public float maxAvoidanceForce = .5f; 
+    public float separationThreshold = 1f;
+    public float separationSpeed = .5f;
 
 
     // Start is called before the first frame update
@@ -75,14 +78,14 @@ public class ArmyLogic : MonoBehaviour
                 }
                 zombie.transform.Translate(Vector3.forward * Time.deltaTime * moveSpeed, Space.World); //moves the character forward
 
-                if (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.LeftArrow))  //if player is not heading outside the boundary
+                if (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.LeftArrow) && zombieScript.dead == false)  //if player is not heading outside the boundary
                 {
                     if (zombie.transform.position.x > (levelBoundary.leftSide + zombieScript.offset.x)) //if player is pressing left key, move left
                     {
                         zombie.transform.Translate(Vector3.left * Time.deltaTime * strafeSpeed);
                     }
                 }
-                if (Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.RightArrow)) //if player is not heading outside the boundary
+                if (Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.RightArrow) && zombieScript.dead == false) //if player is not heading outside the boundary
                 {
                     if (zombie.transform.position.x < (levelBoundary.rightSide + zombieScript.offset.x)) //if player is pressing right key, move right
                     {
@@ -98,7 +101,7 @@ public class ArmyLogic : MonoBehaviour
                 collectableControl.waveNumber++;
                 waveStarted = true;
             }
-            
+
             CameraController.row = 0;
             updateArmyCooldown = 1f;
             Enemy[] enemies = FindObjectsOfType<Enemy>();
@@ -133,6 +136,8 @@ public class ArmyLogic : MonoBehaviour
 
             foreach (Zombie zombie in zombies)
             {
+                Vector3 separationForce = CalculateSeparationForce(zombie, zombies);
+                zombie.transform.Translate(separationForce * Time.deltaTime, Space.World);
                 if (zombie != null && zombie.gameObject.activeSelf)
                 {
                     Zombie zombieScript = zombie.GetComponent<Zombie>();
@@ -147,33 +152,92 @@ public class ArmyLogic : MonoBehaviour
                         }
                     }
 
-                    if (zombieScript.hasTarget == true && zombieScript.target != null && zombieScript.dead == false) // If zombie has a target, move towards that target
+                    if (zombieScript.hasTarget == true && zombieScript.target != null && zombieScript.dead == false)
                     {
+                        // Direction to target
                         Vector3 targetPosition = zombieScript.target.transform.position;
                         Vector3 directionToTarget = (targetPosition - zombie.transform.position).normalized;
+
+                        // Calculate stopping position
+                        Vector3 stopPosition = targetPosition - directionToTarget * (zombieScript.attackRange - 0.1f);
                         float distanceToTarget = Vector3.Distance(zombie.transform.position, targetPosition);
-                        if (distanceToTarget > zombieScript.attackRange) // If zombie is outside its range, move towards the target
+
+
+                        // Obstacle avoidance
+                        Vector3 avoidanceVector = CalculateAvoidanceVector(zombie, zombies);
+
+                        // Combine all vectors
+                        Vector3 finalDirection = directionToTarget + separationForce + avoidanceVector;
+                        finalDirection.Normalize();
+
+                        // Check if zombie needs to stop
+                        if (distanceToTarget > zombieScript.attackRange)
                         {
-                            float step = moveSpeed * Time.deltaTime;
-
-                            // Calculate a position that is range units away from the target minus .1f
-                            Vector3 stopPosition = targetPosition - directionToTarget * (zombieScript.attackRange - .1f);
-
-                            // Use Vector3.MoveTowards to move towards the stop position
-                            Vector3 newPosition = Vector3.MoveTowards(zombie.transform.position, stopPosition, step);
-
-                            // Apply the new position to the zombie
+                            // Move zombie towards the stop position
+                            Vector3 newPosition = Vector3.MoveTowards(zombie.transform.position, stopPosition, moveSpeed * Time.deltaTime);
                             zombie.transform.position = newPosition;
-
-                            // Rotate the zombie to face the target
-                            Quaternion targetRotation = Quaternion.LookRotation(directionToTarget);
-                            zombie.transform.rotation = Quaternion.Slerp(zombie.transform.rotation, targetRotation, step);
                         }
+
+                        // Rotate the zombie to face the target
+                        Quaternion targetRotation = Quaternion.LookRotation(directionToTarget);
+                        zombie.transform.rotation = Quaternion.Slerp(zombie.transform.rotation, targetRotation, moveSpeed * Time.deltaTime);
                     }
                 }
             }
         }
     }
+
+
+
+    private Vector3 CalculateAvoidanceVector(Zombie currentZombie, Zombie[] allZombies)
+    {
+        Vector3 avoidanceVector = Vector3.zero;
+
+        foreach (Zombie otherZombie in allZombies)
+        {
+            if (otherZombie != currentZombie)
+            {
+                float distance = Vector3.Distance(currentZombie.transform.position, otherZombie.transform.position);
+                if (distance < avoidanceThreshold)
+                {
+                    Vector3 awayFromZombie = currentZombie.transform.position - otherZombie.transform.position;
+                    avoidanceVector += awayFromZombie.normalized / distance;
+                }
+            }
+        }
+
+        return avoidanceVector.normalized * maxAvoidanceForce;
+    }
+
+
+    private Vector3 CalculateSeparationForce(Zombie currentZombie, Zombie[] allZombies)
+    {
+        Vector3 separationForce = Vector3.zero;
+        int nearbyZombiesCount = 0;
+
+        foreach (Zombie otherZombie in allZombies)
+        {
+            if (otherZombie != currentZombie)
+            {
+                float distance = Vector3.Distance(currentZombie.transform.position, otherZombie.transform.position);
+                if (distance < separationThreshold)
+                {
+                    Vector3 awayFromZombie = currentZombie.transform.position - otherZombie.transform.position;
+                    separationForce += awayFromZombie.normalized / distance; 
+                    nearbyZombiesCount++;
+                }
+            }
+        }
+
+        if (nearbyZombiesCount > 0)
+        {
+            separationForce /= nearbyZombiesCount; 
+            separationForce *= separationSpeed;
+        }
+
+        return separationForce;
+    }
+
 
     public void checkEnemiesCount(Enemy[] enemies) //checks to see if all enemies are dead
     {
@@ -322,6 +386,8 @@ public class ArmyLogic : MonoBehaviour
         }
         return nearestEnemy;
     }
+
+
 
 
 }

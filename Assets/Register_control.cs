@@ -7,7 +7,7 @@ using TMPro;
 public class Register_control : MonoBehaviour
 {
 
-{
+    /*
     public TMP_InputField emailInput;
     public TMP_InputField passwordInput;
     public TMP_Inputfield f_nameInput;
@@ -26,5 +26,5 @@ public class Register_control : MonoBehaviour
         });
     }
 
-}
+    */
 }
