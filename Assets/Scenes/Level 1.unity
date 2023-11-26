@@ -5554,8 +5554,11 @@ MonoBehaviour:
   - {fileID: 165424, guid: 9f4313a771e05c64d8da7ae6bd19a19f, type: 3}
   - {fileID: 4498097713903640640, guid: 3183172f0af8d0349851baa5ac067962, type: 3}
   playerAnimator: {fileID: 1706913274}
-  stoppingDistance: 1
   healthRechargeCooldown: 2
+  avoidanceThreshold: 0.5
+  maxAvoidanceForce: 0.5
+  separationThreshold: 0.5
+  separationSpeed: 0.5
 --- !u!114 &2091946188
 MonoBehaviour:
   m_ObjectHideFlags: 0
