@@ -1418,7 +1418,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 468790818}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: FirebaseController, Assembly-CSharp
         m_MethodName: SignupUser
         m_Mode: 1
@@ -1477,7 +1477,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 468790819}
-  - component: {fileID: 468790818}
   m_Layer: 0
   m_Name: Firebase Manager
   m_TagString: Untagged
@@ -1485,36 +1484,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &468790818
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 468790817}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ac8b6c1fdd019bb479b989212731baf0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  loginPanel: {fileID: 1339209250}
-  signupPanel: {fileID: 1359815551}
-  forgotPasswordPanel: {fileID: 855444819}
-  myAccount: {fileID: 0}
-  notificationPanel: {fileID: 1483455692}
-  loginEmail: {fileID: 520410164}
-  forgotPasswordEmail: {fileID: 1426706152}
-  loginPassword: {fileID: 1719288940}
-  signupEmail: {fileID: 1953850510}
-  signupPassword: {fileID: 184924235}
-  signupFname: {fileID: 1381071770}
-  signupLname: {fileID: 943601509}
-  signupUsername: {fileID: 1538354204}
-  notificationTitle: {fileID: 1483942304}
-  notificationMessage: {fileID: 772768971}
-  accountUsername: {fileID: 0}
-  accountEmail: {fileID: 0}
-  rememberMe: {fileID: 1141237849}
 --- !u!4 &468790819
 Transform:
   m_ObjectHideFlags: 0
@@ -5698,17 +5667,17 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: UnityEngine.AudioSource, UnityEngine
-        m_MethodName: 
-        m_Mode: 1
+      - m_Target: {fileID: 1972133945}
+        m_TargetAssemblyTypeName: UnityEngine.Behaviour, UnityEngine
+        m_MethodName: set_enabled
+        m_Mode: 6
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: 
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 
-          m_BoolArgument: 0
+          m_BoolArgument: 1
         m_CallState: 2
 --- !u!114 &1273832777
 MonoBehaviour:
@@ -6339,11 +6308,11 @@ GameObject:
   - component: {fileID: 1359815554}
   m_Layer: 5
   m_Name: Register_menu
-  m_TagString: Untagged
+  m_TagString: EditorOnly
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1359815552
 RectTransform:
   m_ObjectHideFlags: 0
@@ -6477,9 +6446,15 @@ MonoBehaviour:
   m_GameObject: {fileID: 1359815551}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 79826f9afa692a648abf5611fc5e6d56, type: 3}
+  m_Script: {fileID: 11500000, guid: d22c2a5db9c06b548984e12a44aa5c43, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  usernameInput: {fileID: 1538354204}
+  passwordInput: {fileID: 184924235}
+  emailInput: {fileID: 1953850510}
+  f_nameInput: {fileID: 1381071770}
+  l_nameInput: {fileID: 943601509}
+  registerButton: {fileID: 464077876}
 --- !u!1 &1381071768
 GameObject:
   m_ObjectHideFlags: 0
@@ -9109,7 +9084,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1769775623
 Transform:
   m_ObjectHideFlags: 0
@@ -9642,7 +9617,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 468790818}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: FirebaseController, Assembly-CSharp
         m_MethodName: LoginUser
         m_Mode: 1
@@ -10133,6 +10108,50 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1953850508}
   m_CullTransparentMesh: 1
+--- !u!1 &1972133944
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1972133946}
+  - component: {fileID: 1972133945}
+  m_Layer: 0
+  m_Name: UIControls
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1972133945
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1972133944}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9c9c5695fe542cd45b0becc34b55e8c2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!4 &1972133946
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1972133944}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 621.80054, y: 299.24884, z: 7.1053314}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1982792009
 GameObject:
   m_ObjectHideFlags: 0
@@ -11542,3 +11561,4 @@ SceneRoots:
   - {fileID: 1655095467}
   - {fileID: 1636671281}
   - {fileID: 2059705687}
+  - {fileID: 1972133946}
