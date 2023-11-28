@@ -10,7 +10,7 @@ public class exitgame : MonoBehaviour
 
     public Button exitButton;
 
-    void QuitGame()
+    public void QuitGame()
     {
         Application.Quit();
         Debug.Log("Game is exiting");
