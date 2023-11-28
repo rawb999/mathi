@@ -15,17 +15,17 @@ public class TileManager : MonoBehaviour
     private int count = 0;
     public int numberOfEnemies;
     public GameObject enemyPrefab;
+    private List<Vector3> enemySpawnPoints = new List<Vector3>();
     // Start is called before the first frame update
     void Start()
     {
-        numberOfEnemies = 5;
-        spawnTile();
-        spawnTile();
+        numberOfEnemies = 1;
         spawnTile();
         spawnEnemyTile(0);
         SpawnEnemies(numberOfEnemies);
-        
-        
+        spawnTile();
+        spawnEnemyTile(0);
+        SpawnEnemies(numberOfEnemies);
     }
 
     // Update is called once per frame
@@ -33,7 +33,7 @@ public class TileManager : MonoBehaviour
     {
         if (playerTransform.position.z > zSpawn - (numberOfTiles * tileLength)) 
         {
-            if (count == 3)
+            if (count == 1)
             {
                 count = 0;
                 spawnEnemyTile(0);
@@ -47,6 +47,7 @@ public class TileManager : MonoBehaviour
             
             DeleteTile();
         }
+        ActivateEnemiesNearPlayer();
     }
 
     private void spawnTile()
@@ -72,30 +73,44 @@ public class TileManager : MonoBehaviour
     
     void SpawnEnemies(int enemiesQuant)
     {
-        for (int i = 0; i < (enemiesQuant); i++)
+        for(int i = 0; i < numberOfEnemies; i++)
         {
-            // instantiate the prefab at a random position
             Vector3 randomPosition = new Vector3(Random.Range(-7f, 7f), .5f, (zSpawn - 20) + Random.Range(0, 7f));
-            Quaternion randomRotation = Quaternion.Euler(0, 180, 0);
-            
-
-            Instantiate(enemyPrefab, randomPosition, randomRotation);
+            enemySpawnPoints.Add(randomPosition);
         }
-        numberOfEnemies += 2;
 
-        if (collectableControl.waveNumber > 4)
+        numberOfEnemies += 1;
+
+        if (collectableControl.waveNumber > 9)
         {
             numberOfEnemies += 1;
         }
 
         if (collectableControl.waveNumber > 9)
         {
-            numberOfEnemies += 3;
+            numberOfEnemies += 2;
         }
         if (collectableControl.waveNumber > 14)
         {
-            numberOfEnemies += 5;
+            numberOfEnemies += 3;
+        }
+        if (collectableControl.waveNumber > 19)
+        {
+            numberOfEnemies += 4;
         }
     }
-    
+
+    void ActivateEnemiesNearPlayer()
+    {
+        for (int i = enemySpawnPoints.Count - 1; i >= 0; i--)
+        {
+            if (Vector3.Distance(playerTransform.position, enemySpawnPoints[i]) < 20f)
+            {
+                Quaternion randomRotation = Quaternion.Euler(0, 180, 0);
+                Instantiate(enemyPrefab, enemySpawnPoints[i], randomRotation); // Instantiate the enemy
+                enemySpawnPoints.RemoveAt(i); // Remove the spawn point from the list
+            }
+        }
+    }
+
 }

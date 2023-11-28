@@ -23,7 +23,7 @@ public class BarrierScript2 : MonoBehaviour
 
     private int variableNumber3;
     private int variableNumber4;
-
+    public string type = "tank";
 
 
     void Start()
@@ -33,25 +33,25 @@ public class BarrierScript2 : MonoBehaviour
 
         if (number == 0)
         {
-            variableNumber = Random.Range(0, 60);
-            variableNumber2 = Random.Range(0, 60);
+            variableNumber = Random.Range(50, 251);
+            variableNumber2 = Random.Range(50, 251);
             barrierText.text = variableNumber.ToString() + " + " + variableNumber2.ToString();
         }
 
         if (number == 1)
         {
-            variableNumber = Random.Range(1, 8);
-            variableNumber2 = Random.Range(1, 8);
-            variableNumber3 = Random.Range(1, 50);
+            variableNumber = Random.Range(1, 51);
+            variableNumber2 = Random.Range(2, 9);
+            variableNumber3 = Random.Range(5, 26);
             barrierText.text = "(" + variableNumber.ToString() + " * " + variableNumber2.ToString() + ") + " + variableNumber3.ToString();
         }
 
         if (number == 2)
         {
-            variableNumber = Random.Range(1, 8);
-            variableNumber2 = Random.Range(1, 8);
-            variableNumber3 = Random.Range(1, 8);
-            variableNumber4 = Random.Range(1, 8);
+            variableNumber = Random.Range(5, 16);
+            variableNumber2 = Random.Range(1, 4);
+            variableNumber3 = Random.Range(5, 11);
+            variableNumber4 = Random.Range(6, 15);
             barrierText.text = "(" + variableNumber.ToString() + " * " + variableNumber2.ToString() + ") + (" + variableNumber3.ToString() + " * " + variableNumber4.ToString() + ")";
         }
 
