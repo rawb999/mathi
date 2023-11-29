@@ -49,6 +49,18 @@ public class Zombie : MonoBehaviour
             ArmyLogic.currentZombs--;
             armyLogicSubtractZomb();
             collectableControl.totalScoreCount -= 10;
+            if (type == "ranged")
+            {
+                collectableControl.rangedScoreCount -= 10;
+            }
+            else if (type == "melee")
+            {
+                collectableControl.meleeScoreCount -= 10;
+            }
+            else
+            {
+                collectableControl.tankScoreCount -= 10;
+            }
             Destroy(gameObject);
         }
         UpdateHealthBarVisibility();

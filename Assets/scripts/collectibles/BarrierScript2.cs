@@ -29,32 +29,62 @@ public class BarrierScript2 : MonoBehaviour
     void Start()
     {
         //generate a random number for the equation to be used
-        number = Random.Range(0, 3);
+        number = Random.Range(0, 7);
 
         if (number == 0)
         {
-            variableNumber = Random.Range(50, 251);
-            variableNumber2 = Random.Range(50, 251);
+            variableNumber = Random.Range(10, 151);
+            variableNumber2 = Random.Range(10, 151);
             barrierText.text = variableNumber.ToString() + " + " + variableNumber2.ToString();
         }
 
         if (number == 1)
         {
-            variableNumber = Random.Range(1, 51);
-            variableNumber2 = Random.Range(2, 9);
-            variableNumber3 = Random.Range(5, 26);
+            variableNumber = Random.Range(2, 11);
+            variableNumber2 = Random.Range(4, 11);
+            variableNumber3 = Random.Range(20, 61);
             barrierText.text = "(" + variableNumber.ToString() + " * " + variableNumber2.ToString() + ") + " + variableNumber3.ToString();
+
         }
 
         if (number == 2)
         {
-            variableNumber = Random.Range(5, 16);
-            variableNumber2 = Random.Range(1, 4);
-            variableNumber3 = Random.Range(5, 11);
-            variableNumber4 = Random.Range(6, 15);
+            variableNumber = Random.Range(3, 9);
+            variableNumber2 = Random.Range(3, 9);
+            variableNumber3 = Random.Range(3, 9);
+            variableNumber4 = Random.Range(3, 9);
             barrierText.text = "(" + variableNumber.ToString() + " * " + variableNumber2.ToString() + ") + (" + variableNumber3.ToString() + " * " + variableNumber4.ToString() + ")";
         }
 
+        if (number == 3)
+        {
+            variableNumber = Random.Range(160, 321);
+            variableNumber2 = Random.Range(2, 11);
+            barrierText.text = variableNumber.ToString() + " / " + variableNumber2.ToString();
+        }
+
+        if (number == 4)
+        {
+            variableNumber = Random.Range(10, 37);
+            variableNumber2 = Random.Range(10, 37);
+            variableNumber3 = Random.Range(10, 37);
+            barrierText.text = variableNumber.ToString() + " + " + variableNumber2.ToString() + " + " + variableNumber3.ToString();
+        }
+
+        if (number == 5)
+        {
+            variableNumber = Random.Range(4, 10);
+            variableNumber2 = Random.Range(4, 10);
+            barrierText.text = variableNumber.ToString() + "^2 + " + variableNumber2.ToString() + "^2";
+        }
+
+        if (number == 6)
+        {
+            variableNumber = Random.Range(20, 51);
+            variableNumber2 = Random.Range(10, 21);
+            variableNumber3 = Random.Range(2, 9);
+            barrierText.text = "(" + variableNumber.ToString() + " - " + variableNumber2.ToString() + ") * " + variableNumber3.ToString();
+        }
     }
 
     private void OnTriggerEnter(Collider other)
@@ -85,6 +115,26 @@ public class BarrierScript2 : MonoBehaviour
                 Random3();
             }
 
+            if (number == 3)
+            {
+                Random4();
+            }
+
+            if (number == 4)
+            {
+                Random5();
+            }
+
+            if (number == 5)
+            {
+                Random6();
+            }
+
+            if (number == 6)
+            {
+                Random7();
+            }
+
 
         }
     }
@@ -107,11 +157,48 @@ public class BarrierScript2 : MonoBehaviour
         collectableControl.tankScoreCount += added;
         collectableControl.totalScoreCount += added;
         ArmyLogic.recentType = "tank";
+
     }
 
     private void Random3()
     {
         int added = (variableNumber * variableNumber2) + (variableNumber3 * variableNumber4);
+        ArmyLogic.updateArmyCooldown = .5f;
+        collectableControl.tankScoreCount += added;
+        collectableControl.totalScoreCount += added;
+        ArmyLogic.recentType = "tank";
+    }
+
+    private void Random4()
+    {
+        int added = variableNumber / variableNumber2;
+        ArmyLogic.updateArmyCooldown = .5f;
+        collectableControl.tankScoreCount += added;
+        collectableControl.totalScoreCount += added;
+        ArmyLogic.recentType = "tank";
+    }
+
+    private void Random5()
+    {
+        int added = variableNumber + variableNumber2 + variableNumber3;
+        ArmyLogic.updateArmyCooldown = .5f;
+        collectableControl.tankScoreCount += added;
+        collectableControl.totalScoreCount += added;
+        ArmyLogic.recentType = "tank";
+    }
+
+    private void Random6()
+    {
+        int added = (variableNumber * variableNumber) + (variableNumber2 * variableNumber2);
+        ArmyLogic.updateArmyCooldown = .5f;
+        collectableControl.tankScoreCount += added;
+        collectableControl.totalScoreCount += added;
+        ArmyLogic.recentType = "tank";
+    }
+
+    private void Random7()
+    {
+        int added = (variableNumber - variableNumber2) * variableNumber3;
         ArmyLogic.updateArmyCooldown = .5f;
         collectableControl.tankScoreCount += added;
         collectableControl.totalScoreCount += added;
