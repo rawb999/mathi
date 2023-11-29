@@ -11,7 +11,7 @@ public class web_request : MonoBehaviour
 // Also try to download a non-existing page. Display the error.
 {
 
-    
+    //public GameObject userStartScreen;
 
     void Start()
     {
@@ -113,23 +113,18 @@ public class web_request : MonoBehaviour
             else
             {
                 Debug.Log(www.downloadHandler.text);
-               
-                /*
-                 *  This has to be implemented here with a button, then the button attached int he UI as well. 
-                 *  This is for the reason that opens on a succsess. 
-                 * 
-                public void openuserPage()
-                {
-                    startPage.SetActive(false);
-                    loginPanel.SetActive(false);
-                    registerPanel.SetActive(false);
-                    userPage.SetActive(true);
-                    myAccount.SetActive(false);
-                } */
-
+              // interfaceControl.openuserPage();
+                
+                
+            }
         }
 
     }
+
+
+
+
+
     //================================ User Registration Call ==============================
 
    public  IEnumerator User_Registration(string username, string password, string email, string f_name, string l_name)
