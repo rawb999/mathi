@@ -12,10 +12,10 @@ public class Reset : MonoBehaviour
         ArmyLogic.currentTankZombs = 0;
         ArmyLogic.currentMeleeZombs = 0;
         ArmyLogic.currentRangedZombs = 0;
-        ArmyLogic.recentTotalScore = 10;
-        ArmyLogic.updatedTotalScore = 10;
+        ArmyLogic.recentTotalScore = 0;
+        ArmyLogic.updatedTotalScore = 0;
         collectableControl.waveNumber = 0;
-        collectableControl.totalScoreCount = 10;
+        collectableControl.totalScoreCount = 0;
         ArmyLogic.inFight = false;
         ArmyLogic.recentType = "melee";
         collectableControl.playerDead = false;
