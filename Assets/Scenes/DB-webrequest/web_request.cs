@@ -113,7 +113,19 @@ public class web_request : MonoBehaviour
             else
             {
                 Debug.Log(www.downloadHandler.text);
-            }
+               
+                /*
+                 *  This has to be implemented here with a button, then the button attached int he UI as well. 
+                 *  This is for the reason that opens on a succsess. 
+                 * 
+                public void openuserPage()
+                {
+                    startPage.SetActive(false);
+                    loginPanel.SetActive(false);
+                    registerPanel.SetActive(false);
+                    userPage.SetActive(true);
+                    myAccount.SetActive(false);
+                } */
 
         }
 
