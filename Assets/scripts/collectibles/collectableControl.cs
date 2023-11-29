@@ -14,12 +14,18 @@ public class collectableControl : MonoBehaviour
     public static int totalScoreCount = 10; // Lupe here changed this to 11  was 0, for the game over test
     public Game_managerUI game_End; // for refrence to end the game 
     public static bool playerDead = false;
+    public GameObject meleeCountDisplay;
+    public GameObject tankCountDisplay;
+    public GameObject rangedCountDisplay;
 
     private bool isDead; // to make sure it isn't constantly happening
     void Update()
     {
         scoreCountDisplay.GetComponent<Text>().text = "" + totalScoreCount;
         waveCountDisplay.GetComponent<Text>().text = "" + waveNumber;
+        meleeCountDisplay.GetComponent<Text>().text = "" + meleeScoreCount / 10;
+        tankCountDisplay.GetComponent<Text>().text = "" + tankScoreCount / 10;
+        rangedCountDisplay.GetComponent<Text>().text = "" + rangedScoreCount / 10;
 
 
         // THis should end the game - Lupe 
