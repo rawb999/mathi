@@ -18,6 +18,7 @@ public class Zombie : MonoBehaviour
     public string type = "melee"; //set to melee as default, switched to something else by armylogic
     private int attackDamage;
     public float attackRange;
+    AudioSource attackSound; 
 
     void Awake()
     {
@@ -30,6 +31,7 @@ public class Zombie : MonoBehaviour
         SetStatsBasedOnType();
         health = maxHealth;
         healthBar.UpdateHealthBar(health, maxHealth);
+        attackSound = GetComponent<AudioSource>();
     }
 
     void Update()
@@ -66,6 +68,7 @@ public class Zombie : MonoBehaviour
                 animator.SetBool("attacking", true);
                 if (attackCooldownLeft <= 0.1f)
                 {
+                    attackSound.Play();
                     animator.SetTrigger("attackTrigger");
                     attackCooldownLeft = attackCooldown;
                     target.TakeDamage(attackDamage);

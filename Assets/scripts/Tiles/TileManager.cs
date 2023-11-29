@@ -75,7 +75,7 @@ public class TileManager : MonoBehaviour
     {
         for(int i = 0; i < numberOfEnemies; i++)
         {
-            Vector3 randomPosition = new Vector3(Random.Range(-7f, 7f), .5f, (zSpawn - 20) + Random.Range(0, 7f));
+            Vector3 randomPosition = new Vector3(Random.Range(-4f, 4f), .5f, (zSpawn - 20) + Random.Range(0, 10f));
             enemySpawnPoints.Add(randomPosition);
         }
 

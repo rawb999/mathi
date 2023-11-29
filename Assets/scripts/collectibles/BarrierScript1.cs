@@ -56,6 +56,13 @@ public class BarrierScript1 : MonoBehaviour
             variableNumber4 = Random.Range(6, 15);
             barrierText.text = "(" + variableNumber.ToString() + " * " + variableNumber2.ToString() + ") + (" + variableNumber3.ToString() + " * " + variableNumber4.ToString() + ")";
         }
+       //(x / y) + z
+       //(sqrt(x)^y)
+       //(x + y + z)
+       //((x - y) * z)
+       //x^2 + y^2
+
+    
 
     }
 

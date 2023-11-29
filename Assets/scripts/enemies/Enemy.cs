@@ -15,7 +15,7 @@ public class Enemy : MonoBehaviour
     [SerializeField] FloatingHealthbar healthBar;
     // Start is called before the first frame update
     public Animator animator;
-    public float attackCooldown = 1f; // seconds
+    public float attackCooldown = .5f; // seconds
     private float attackCooldownLeft = 0f;
     private int attackDamage;
 
