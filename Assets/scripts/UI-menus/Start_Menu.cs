@@ -7,7 +7,7 @@ public class Start_Menu : MonoBehaviour
     //
     public void Start_Screen()
     {
-        
+        SubmitLeaderboardScore.GetPlayerHighScore();
         SceneManager.LoadSceneAsync(1);
         Reset.resetValues();
     }
