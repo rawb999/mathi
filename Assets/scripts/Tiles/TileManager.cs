@@ -53,7 +53,7 @@ public class TileManager : MonoBehaviour
     private void spawnTile()
     {
         
-        GameObject go = Instantiate(tilePrefabs[Random.Range(0, 6)], transform.forward * zSpawn, transform.rotation);
+        GameObject go = Instantiate(tilePrefabs[Random.Range(0, 5)], transform.forward * zSpawn, transform.rotation);
         activeTiles.Add(go);
         zSpawn += tileLength;
     }
@@ -66,7 +66,7 @@ public class TileManager : MonoBehaviour
 
     private void spawnEnemyTile(int tileIndex)
     {
-        GameObject go = Instantiate(enemyTilePrefabs[tileIndex], transform.forward * zSpawn, transform.rotation);
+        GameObject go = Instantiate(enemyTilePrefabs[Random.Range(0, 5)], transform.forward * zSpawn, transform.rotation);
         activeTiles.Add(go);
         zSpawn += tileLength;
     }
