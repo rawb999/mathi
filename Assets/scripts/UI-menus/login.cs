@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using UnityEngine.SceneManagement;
 
 public class login : MonoBehaviour
 {
@@ -16,6 +17,7 @@ public class login : MonoBehaviour
         LoginButton.onClick.AddListener(() =>
         {
             StartCoroutine(MainUI.Instance.web_request.Login(emailInput.text, passwordInput.text));
+            SceneManager.LoadSceneAsync(2);
 
         });
     }

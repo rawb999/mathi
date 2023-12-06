@@ -5,10 +5,22 @@ using UnityEngine.SceneManagement;
 public class Start_Menu : MonoBehaviour
 {
     //
-    public void Start_Screen()
+    static public void Start_Screen()
     {
-        SubmitLeaderboardScore.GetPlayerHighScore();
-        SceneManager.LoadSceneAsync(1);
-        Reset.resetValues();
+        //SubmitLeaderboardScore.GetPlayerHighScore();
+        SceneManager.LoadSceneAsync(0);
+        //Reset.resetValues();
+    }
+    static public void main_menuScreen()
+    {
+
+        SceneManager.LoadSceneAsync(0);
+
+    }
+    static public void start_game()
+    {
+
+        SceneManager.LoadSceneAsync(2);
+
     }
 }
