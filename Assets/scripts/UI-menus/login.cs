@@ -17,7 +17,7 @@ public class login : MonoBehaviour
         LoginButton.onClick.AddListener(() =>
         {
             StartCoroutine(MainUI.Instance.web_request.Login(emailInput.text, passwordInput.text));
-            SceneManager.LoadSceneAsync(2);
+            SceneManager.LoadSceneAsync(1);
 
         });
     }

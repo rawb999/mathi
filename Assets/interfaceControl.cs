@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class interfaceControl : MonoBehaviour
 {
-   public GameObject startPage, loginPanel, registerPanel, userPage, myAccount;
+   public  GameObject startPage, loginPanel, registerPanel, userPage, myAccount;
 
     //, myaccountpanel , leaderBoardpage
 

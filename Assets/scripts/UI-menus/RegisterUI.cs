@@ -3,9 +3,12 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using UnityEngine.SceneManagement;
+
 
 public class RegisterUI : MonoBehaviour
 {
+    //public GameObject startPage, registerpanel;
     public TMP_InputField usernameInput;
     public TMP_InputField passwordInput;
     public TMP_InputField emailInput;
@@ -19,7 +22,9 @@ public class RegisterUI : MonoBehaviour
         registerButton.onClick.AddListener(() =>
         {
             StartCoroutine(MainUI.Instance.web_request.User_Registration(usernameInput.text, passwordInput.text, emailInput.text, f_nameInput.text, l_nameInput.text));
-
+             //startPage.SetActive(true);
+             //registerpanel.SetActive(false);
+             
         });
     }
 
