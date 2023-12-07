@@ -3,15 +3,28 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
 using TMPro;
+using UnityEngine.UI;
+using UnityEngine.SceneManagement;
+
+
 public class web_request : MonoBehaviour
 
-   
 
 // Access a website and use UnityWebRequest.Get to download a page.
 // Also try to download a non-existing page. Display the error.
 {
+   public GameObject notificationPanel;
+   public TextMeshProUGUI notification_title, notification_message; 
+    //public Button closeNotification;;
+    //public GameObject userStartScreen; Used on a different version
 
-    //public GameObject userStartScreen;
+     public void closeNotification()
+    {
+        notification_title.text = "";
+        notification_message.text = "";
+
+        notificationPanel.SetActive(false);
+    }
 
     void Start()
     {
@@ -24,22 +37,16 @@ public class web_request : MonoBehaviour
         //StartCoroutine(GetRequest("https://error.html"));
     }
     //------------------------- Notification Panel ----------------------------------//
-/*
+
     public void showNotification(string title, string message)
     {
-        notificationTitle.text = "" + title;
-        notificationMessage.text = "" + message;
+        notification_title.text = "" + title;
+        notification_message.text = "" + message;
 
         notificationPanel.SetActive(true);
     }
-      public void closeNotification()
-    {
-        notificationTitle.text = "";
-        notificationMessage.text = "";
-
-        notificationPanel.SetActive(false);
-    }
-    */
+     
+    
 
     //--------------------  TEST FOR Retrieving Date ---------------------------------
     public IEnumerator GetDate(string uri)
@@ -108,12 +115,16 @@ public class web_request : MonoBehaviour
             if (www.result != UnityWebRequest.Result.Success)
             {
                 Debug.Log(www.error);
-
+                
             }
             else
             {
                 Debug.Log(www.downloadHandler.text);
-              // interfaceControl.openuserPage();
+                SceneManager.LoadSceneAsync(1);
+
+
+                //showNotification("Error 10", "Login Unsuccesful");
+
                 
                 
             }
@@ -129,6 +140,7 @@ public class web_request : MonoBehaviour
 
    public  IEnumerator User_Registration(string username, string password, string email, string f_name, string l_name)
     {
+        bool isCoroutineRunning = true;
         WWWForm form = new WWWForm();
         form.AddField("LoginUser", username);
         form.AddField("LoginPass", password);
@@ -143,10 +155,16 @@ public class web_request : MonoBehaviour
             if (www.result != UnityWebRequest.Result.Success)
             {
                Debug.Log(www.error);
+                
+                //yield return isCoroutineRunning = false;
+                
+                showNotification("Error 11", "Account not made, try again");
             }
             else
             {
                 Debug.Log(www.downloadHandler.text);
+                SceneManager.LoadSceneAsync(0);  
+               //yield return isCoroutineRunning = false;
             }
 
         }

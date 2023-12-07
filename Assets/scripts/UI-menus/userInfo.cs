@@ -5,17 +5,18 @@ using UnityEngine.UI;
 
 public class userInfo : MonoBehaviour
 {
-    public string UserID;
-    public string UserName;
-    public string Email;
-    public string Name;
-    public string Upassword;
+    //  public string UserName { get; private set;}
+    //  string Email;
+    //  string Fname;
+    //  string Lname;
+    //  string Upassword;
+    //  string ID;
 
-    public void SetInfo(string username, string userpassword)
-    { 
-        UserName = username;
-        Upassword = userpassword;
+    // public void SetInfo(string uEmail, string userpassword)
+    // { 
+    //     Email = uEmail;
+    //     Upassword = userpassword;
         
-    
-    }
+    // }
+   
 }

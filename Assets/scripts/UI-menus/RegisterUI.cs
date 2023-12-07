@@ -15,7 +15,9 @@ public class RegisterUI : MonoBehaviour
     public TMP_InputField f_nameInput;
     public TMP_InputField l_nameInput;
     public Button registerButton;
-
+    //bool madeaccount = false;
+    
+   // private bool isCoroutineRunning;
 
     void Start()
     {
@@ -23,9 +25,18 @@ public class RegisterUI : MonoBehaviour
         {
             StartCoroutine(MainUI.Instance.web_request.User_Registration(usernameInput.text, passwordInput.text, emailInput.text, f_nameInput.text, l_nameInput.text));
              //startPage.SetActive(true);
+             //SceneManager.LoadSceneAsync(1);
              //registerpanel.SetActive(false);
+             //bool madeaccount = true;
+             
              
         });
+        
+        
+
+    
     }
+
+   
 
 }
